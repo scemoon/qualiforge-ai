@@ -1,0 +1,48 @@
+{
+  "version": "0.1.0",
+  "lastDeployed": null,
+  "envId": "",
+  "platform": "web",
+  "frontend": {
+    "web": {
+      "srcPath": "./src/web",
+      "buildCommand": "npm run build",
+      "outputPath": "./dist",
+      "buildVerified": false,
+      "deployedAt": null,
+      "staticHosting": {
+        "enabled": true,
+        "envId": "",
+        "domain": null,
+        "customDomain": null,
+        "cdn": true
+      }
+    }
+  },
+  "backend": {
+    "cloudFunctions": [],
+    "cloudRun": [],
+    "database": {
+      "noSql": {
+        "collections": []
+      },
+      "mysql": {
+        "enabled": false,
+        "tables": []
+      }
+    },
+    "securityRules": {}
+  },
+  "tracing": {
+    "enabled": false,
+    "collector": {
+      "type": "mongodb",
+      "collection": "traces"
+    }
+  },
+  "deployOrder": [
+    "backend",
+    "frontend.web"
+  ],
+  "dependencies": {}
+}

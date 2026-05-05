@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --brand-600: #4F46E5;
+  --gold-500: #F59E0B;
+  --success-500: #10B981;
+  --error-500: #EF4444;
+  --info-500: #0EA5E9;
+  --text-primary: #111827;
+  --text-secondary: #4B5563;
+  --bg-page: #F9FAFB;
+  --bg-card: #FFFFFF;
+  --border-default: #E5E7EB;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, 'PingFang SC', 'Microsoft YaHei', Arial, sans-serif;
+  color: var(--text-primary);
+  background-color: var(--bg-page);
+  margin: 0;
+  padding: 0;
+}
+
+* {
+  box-sizing: border-box;
+}

@@ -1,0 +1,30 @@
+{
+  "project": "qualiforge-ai",
+  "phase": "phase4_complete",
+  "phase1": "complete",
+  "phase2": "complete",
+  "phase3": "complete",
+  "phase4": "complete",
+  "created": "2026-04-30",
+  "updated": "2026-04-30T10:04:00+08:00",
+  "description": "QualiForge AI — AI Coding 质量保障社区，四阶段开发完成",
+  "deployed_url": "https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/",
+  "completed_features": [
+    "✅ 10个云函数全部部署（auth, article-crud, skill-crud, evaluation-crud, section-crud, notification-crud, user-crud, search, file-upload, wechat-sync）",
+    "✅ 数据库：11个集合，6标签+4Skill+5评测数据+1篇官方文章+3板块",
+    "✅ 前台页面（13个）：首页/榜单/文章列表/详情/标签/搜索/专家主页/登录/注册",
+    "✅ 管理后台（10个页面）：控制台/文章管理/审核/评测/Skill/板块/标签/用户管理",
+    "✅ 专家中心（5个页面）：主页/发布文章/收藏/通知",
+    "✅ Auth状态管理（Zustand + persist，登录状态同步Header）",
+    "✅ CloudBase 静态托管：https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/",
+    "✅ 管理员账号：admin@qualiforge.ai / admin123456（role=admin）",
+    "✅ 示例评测数据：GPT-4o(92), Claude 3.5 Sonnet(90/93), Gemini 2.0 Pro(88)",
+    "✅ 官方文章：《QualiForge 评测方法论 v1.0》"
+  ],
+  "platform": "web",
+  "cloudbase": {
+    "envId": "cloud1-2gavd8kj8a1ce021",
+    "appUrl": "https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/"
+  },
+  "prd_version": "v5.0"
+}

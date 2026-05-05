@@ -1,0 +1,17 @@
+{
+  "envId": "cloud1-2gavd8kj8a1ce021",
+  "functionRoot": ".",
+  "functions": [
+    { "name": "auth", "timeout": 10, "memorySize": 256, "runtime": "Nodejs20.19" },
+    { "name": "article-crud", "timeout": 10, "memorySize": 512, "runtime": "Nodejs20.19" },
+    { "name": "skill-crud", "timeout": 10, "memorySize": 256, "runtime": "Nodejs20.19" },
+    { "name": "evaluation-crud", "timeout": 10, "memorySize": 256, "runtime": "Nodejs20.19" },
+    { "name": "section-crud", "timeout": 10, "memorySize": 256, "runtime": "Nodejs20.19" },
+    { "name": "notification-crud", "timeout": 10, "memorySize": 256, "runtime": "Nodejs20.19" },
+    { "name": "user-crud", "timeout": 10, "memorySize": 256, "runtime": "Nodejs20.19" },
+    { "name": "search", "timeout": 10, "memorySize": 256, "runtime": "Nodejs20.19" },
+    { "name": "file-upload", "timeout": 30, "memorySize": 512, "runtime": "Nodejs20.19" },
+    { "name": "wechat-sync", "timeout": 30, "memorySize": 256, "runtime": "Nodejs20.19" },
+    { "name": "data-seeder", "timeout": 60, "memorySize": 512, "runtime": "Nodejs18.15" }
+  ]
+}
