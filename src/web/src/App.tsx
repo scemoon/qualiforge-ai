@@ -84,4 +84,4 @@ export default function App() {
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
-}
+}export const QFA_BUILD=Date.now();
