@@ -6,18 +6,8 @@ import Placeholder from '@tiptap/extension-placeholder'
 import CodeBlock from '@tiptap/extension-code-block'
 import TaskList from '@tiptap/extension-task-list'
 import TaskItem from '@tiptap/extension-task-item'
-import TurndownService from 'turndown'
+import { Markdown } from '@tiptap/markdown'
 import { useEffect, useCallback, useState } from 'react'
-
-const td = new TurndownService({ headingStyle: 'atx', codeBlockStyle: 'fenced' })
-td.addRule('fencedCodeBlock', {
-  filter: 'pre',
-  replacement: (_content, node) => {
-    const code = (node as HTMLElement).querySelector('code')
-    const lang = code?.className?.replace('language-', '') || ''
-    return '```' + lang + '\n' + (code?.textContent || '') + '\n```\n'
-  }
-})
 
 interface ArticleEditorProps {
   content: string
@@ -47,10 +37,14 @@ export default function ArticleEditor({ content, onChange, placeholder = '开始
       CodeBlock,
       TaskList,
       TaskItem.configure({ nested: true }),
+      Markdown.configure({
+        indentation: { style: 'space', size: 2 },
+      }),
     ],
     content,
     onUpdate: ({ editor }) => {
-      onChange(editor.getHTML())
+      const md = editor.storage.markdown.manager.serialize(editor.getJSON())
+      onChange(md)
     },
     editorProps: {
       attributes: {
@@ -59,32 +53,25 @@ export default function ArticleEditor({ content, onChange, placeholder = '开始
     },
   })
 
-  // Sync external content — HTML stored, TipTap displays as HTML
+  // Sync external content — load Markdown directly into TipTap
   useEffect(() => {
     if (!editor) return
     if (!content) { editor.commands.clearContent(); return }
-    if (content.startsWith('<')) {
-      editor.commands.setContent(content, { emitUpdate: false })
-    } else {
-      const html = td.turndown(content)
-      editor.commands.setContent(html || '<p></p>', { emitUpdate: false })
-    }
+    // content is Markdown string
+    const json = editor.storage.markdown.manager.parse(content)
+    editor.commands.setContent(json, { emitUpdate: false })
   }, [content, editor])
 
   const setLink = useCallback(() => {
     if (!editor) return
     const url = window.prompt('输入链接地址:')
-    if (url) {
-      editor.chain().focus().setLink({ href: url }).run()
-    }
+    if (url) editor.chain().focus().setLink({ href: url }).run()
   }, [editor])
 
   const setImage = useCallback(() => {
     if (!editor) return
     const url = window.prompt('输入图片地址:')
-    if (url) {
-      editor.chain().focus().setImage({ src: url }).run()
-    }
+    if (url) editor.chain().focus().setImage({ src: url }).run()
   }, [editor])
 
   const insertHorizontalRule = useCallback(() => {
@@ -92,9 +79,7 @@ export default function ArticleEditor({ content, onChange, placeholder = '开始
     editor.chain().focus().setHorizontalRule().run()
   }, [editor])
 
-  const toggleFullscreen = useCallback(() => {
-    setIsFullscreen(f => !f)
-  }, [])
+  const toggleFullscreen = useCallback(() => setIsFullscreen(f => !f), [])
 
   if (!editor) return null
 
@@ -118,41 +103,42 @@ export default function ArticleEditor({ content, onChange, placeholder = '开始
     { label: '⛶', title: isFullscreen ? '退出全屏' : '全屏', action: toggleFullscreen },
   ]
 
-  // Fullscreen overlay
+  function renderToolbar() {
+    return toolbarGroups.map((btn, idx) =>
+      btn === '|'
+        ? <span key={`sep-${idx}`} className="w-px h-5 bg-[#E5E7EB] self-center mx-0.5" />
+        : (
+          <button
+            key={btn.label}
+            type="button"
+            title={btn.title}
+            onClick={btn.action}
+            className={`px-1.5 py-1 text-xs border rounded transition font-medium ${
+              btn.active?.()
+                ? 'bg-[#4F46E5] text-white border-[#4F46E5]'
+                : 'border-[#E5E7EB] text-[#374151] hover:bg-[#F3F4F6]'
+            }`}
+          >
+            {btn.label}
+          </button>
+        )
+    )
+  }
+
   if (isFullscreen) {
     return (
       <div className="fixed inset-0 z-50 bg-white flex flex-col">
         <div className="flex items-center justify-between px-4 py-3 border-b border-[#E5E7EB] bg-white">
           <h1 className="text-lg font-bold text-[#111827]">富文本编辑</h1>
           <div className="flex items-center gap-3">
-            <span className="text-xs text-[#9CA3AF]">{content.replace(/<[^>]+>/g, '').length} 字符</span>
+            <span className="text-xs text-[#9CA3AF]">{editor.storage.markdown.manager.serialize(editor.getJSON()).length} 字符</span>
             <button onClick={toggleFullscreen} className="px-3 py-1.5 text-sm border border-[#E5E7EB] rounded-md hover:bg-[#F9FAFB] text-[#4B5563]">退出全屏</button>
           </div>
         </div>
         <div className="flex-1 flex flex-col overflow-hidden">
-          {/* Toolbar */}
           <div className="flex flex-wrap gap-0.5 px-3 py-2 border-b border-[#E5E7EB] bg-white">
-            {toolbarGroups.map((btn, idx) =>
-              btn === '|'
-                ? <span key={`sep-${idx}`} className="w-px h-5 bg-[#E5E7EB] self-center mx-0.5" />
-                : (
-                  <button
-                    key={btn.label}
-                    type="button"
-                    title={btn.title}
-                    onClick={btn.action}
-                    className={`px-1.5 py-1 text-xs border rounded transition font-medium ${
-                      btn.active?.()
-                        ? 'bg-[#4F46E5] text-white border-[#4F46E5]'
-                        : 'border-[#E5E7EB] text-[#374151] hover:bg-[#F3F4F6]'
-                    }`}
-                  >
-                    {btn.label}
-                  </button>
-                )
-            )}
+            {renderToolbar()}
           </div>
-          {/* Editor */}
           <div className="flex-1 overflow-auto">
             <EditorContent editor={editor} className="h-full" />
           </div>
@@ -162,34 +148,10 @@ export default function ArticleEditor({ content, onChange, placeholder = '开始
   }
 
   return (
-    <div
-      className="border border-[#E5E7EB] rounded-md bg-white flex flex-col"
-      style={{ height: 500 }}
-    >
-      {/* Toolbar */}
+    <div className="border border-[#E5E7EB] rounded-md bg-white flex flex-col" style={{ height: 500 }}>
       <div className="flex flex-wrap gap-0.5 px-3 py-2 border-b border-[#E5E7EB]">
-        {toolbarGroups.map((btn, idx) =>
-          btn === '|'
-            ? <span key={`sep-${idx}`} className="w-px h-5 bg-[#E5E7EB] self-center mx-0.5" />
-            : (
-              <button
-                key={btn.label}
-                type="button"
-                title={btn.title}
-                onClick={btn.action}
-                className={`px-1.5 py-1 text-xs border rounded transition font-medium ${
-                  btn.active?.()
-                    ? 'bg-[#4F46E5] text-white border-[#4F46E5]'
-                    : 'border-[#E5E7EB] text-[#374151] hover:bg-[#F3F4F6]'
-                }`}
-              >
-                {btn.label}
-              </button>
-            )
-        )}
+        {renderToolbar()}
       </div>
-
-      {/* Editor */}
       <div className="flex-1 overflow-auto">
         <EditorContent editor={editor} className="h-full" />
       </div>
