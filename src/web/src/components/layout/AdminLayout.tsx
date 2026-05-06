@@ -10,6 +10,7 @@ const navItems = [
   { path: '/admin/sections', label: '板块管理', icon: '📋' },
   { path: '/admin/tags', label: '标签管理', icon: '🏷️' },
   { path: '/admin/wx-config', label: '公众号配置', icon: '📌' },
+  { path: '/my/article/new', label: '发布文章', icon: '✏️', external: true },
 ]
 
 export default function AdminLayout() {
@@ -54,21 +55,36 @@ export default function AdminLayout() {
           </span>
         </div>
         <nav className="flex-1 p-2 overflow-y-auto">
-          {navItems.map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              onClick={() => setSidebarOpen(false)}
-              className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm mb-0.5 ${
-                isActive(item)
-                  ? 'bg-[#EEF2FF] text-[#4F46E5] font-medium'
-                  : 'text-[#4B5563] hover:bg-[#F3F4F6]'
-              }`}
-            >
-              <span>{item.icon}</span>
-              <span className="truncate">{item.label}</span>
-            </Link>
-          ))}
+          {navItems.map((item) => {
+            if (item.external) {
+              return (
+                <a
+                  key={item.path}
+                  href={item.path}
+                  onClick={() => setSidebarOpen(false)}
+                  className="flex items-center gap-2 px-3 py-2 rounded-md text-sm mb-0.5 text-[#4B5563] hover:bg-[#F3F4F6]"
+                >
+                  <span>{item.icon}</span>
+                  <span className="truncate">{item.label}</span>
+                </a>
+              )
+            }
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                onClick={() => setSidebarOpen(false)}
+                className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm mb-0.5 ${
+                  isActive(item)
+                    ? 'bg-[#EEF2FF] text-[#4F46E5] font-medium'
+                    : 'text-[#4B5563] hover:bg-[#F3F4F6]'
+                }`}
+              >
+                <span>{item.icon}</span>
+                <span className="truncate">{item.label}</span>
+              </Link>
+            )
+          })}
         </nav>
         <div className="p-3 border-t border-[#E5E7EB] flex items-center justify-between">
           <Link to="/" className="text-xs text-[#4F46E5] hover:underline">← 返回主页</Link>
