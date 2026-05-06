@@ -12,10 +12,10 @@ async function fetchArticles({ page = 1, status }: { page?: number; status?: str
   return res.json()
 }
 
-async function updateArticleWxConfig(articleId: string, wxConfig: any) {
+async function updateArticleStatus(articleId: string, status: string) {
   const res = await fetch('https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/article-crud', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: 'update', data: { articleId, wxOfficialAccount: wxConfig } }),
+    body: JSON.stringify({ action: 'update', data: { articleId, status, publishedAt: status === 'approved' ? new Date().toISOString() : undefined } }),
   })
   return res.json()
 }
@@ -32,34 +32,19 @@ export default function AdminArticleList() {
   const queryClient = useQueryClient()
   const [page, setPage] = useState(1)
   const [statusFilter, setStatusFilter] = useState('')
-  const [configArticle, setConfigArticle] = useState<any>(null)
-  const [wxForm, setWxForm] = useState({ appId: '', name: '', qrCode: '', shareCode: '' })
 
   const { data, isLoading } = useQuery({
     queryKey: ['admin-articles', page, statusFilter],
     queryFn: () => fetchArticles({ page, status: statusFilter || undefined }),
   })
 
-  const updateMut = useMutation({
-    mutationFn: ({ articleId, wxConfig }: { articleId: string; wxConfig: any }) => updateArticleWxConfig(articleId, wxConfig),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-articles'] })
-      setConfigArticle(null)
-    }
+  const publishMut = useMutation({
+    mutationFn: (articleId: string) => updateArticleStatus(articleId, 'approved'),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin-articles'] }),
   })
 
   const articles = data?.data?.list || []
   const total = data?.data?.total || 0
-
-  const openConfig = (article: any) => {
-    const wx = article.wxOfficialAccount || {}
-    setWxForm({ appId: wx.appId || '', name: wx.name || '', qrCode: wx.qrCode || '', shareCode: wx.shareCode || '' })
-    setConfigArticle(article)
-  }
-
-  const saveConfig = () => {
-    updateMut.mutate({ articleId: configArticle._id, wxConfig: wxForm })
-  }
 
   return (
     <ResponsiveContainer className="py-6 md:py-8">
@@ -114,9 +99,11 @@ export default function AdminArticleList() {
                     </td>
                     <td className="text-center px-4 py-3">
                       <Link to={`/article/${article._id}`} className="text-[#4F46E5] hover:underline mr-2">查看</Link>
-                      <button onClick={() => openConfig(article)} className="text-[#4F46E5] hover:underline mr-2">公众号配置</button>
                       {article.status === 'pending' && (
-                        <Link to="/admin/articles/review" state={{ articleId: article._id }} className="text-[#F59E0B] hover:underline">审核</Link>
+                        <>
+                          <button onClick={() => publishMut.mutate(article._id)} className="text-[#10B981] hover:underline mr-2">发布</button>
+                          <Link to="/admin/articles/review" state={{ articleId: article._id }} className="text-[#F59E0B] hover:underline">审核</Link>
+                        </>
                       )}
                     </td>
                   </tr>
@@ -142,9 +129,11 @@ export default function AdminArticleList() {
                   </span>
                   <div className="flex gap-2">
                     <Link to={`/article/${article._id}`} className="text-[#4F46E5] hover:underline text-sm">查看</Link>
-                    <button onClick={() => openConfig(article)} className="text-[#4F46E5] hover:underline text-sm">配置</button>
                     {article.status === 'pending' && (
-                      <Link to="/admin/articles/review" state={{ articleId: article._id }} className="text-[#F59E0B] hover:underline text-sm">审核</Link>
+                      <>
+                        <button onClick={() => publishMut.mutate(article._id)} className="text-[#10B981] hover:underline text-sm">发布</button>
+                        <Link to="/admin/articles/review" state={{ articleId: article._id }} className="text-[#F59E0B] hover:underline text-sm">审核</Link>
+                      </>
                     )}
                   </div>
                 </div>
@@ -159,40 +148,6 @@ export default function AdminArticleList() {
           <button className="px-4 py-2 border border-[#E5E7EB] rounded-md text-sm" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}>上一页</button>
           <span className="px-4 py-2 text-sm text-[#4B5563]">{page} / {Math.ceil(total / 20)}</span>
           <button className="px-4 py-2 border border-[#E5E7EB] rounded-md text-sm" onClick={() => setPage(p => p + 1)} disabled={page >= Math.ceil(total / 20)}>下一页</button>
-        </div>
-      )}
-
-      {/* WX Config Modal */}
-      {configArticle && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg w-full max-w-md p-6">
-            <h3 className="text-lg font-bold text-[#111827] mb-1">公众号投放配置</h3>
-            <p className="text-sm text-[#9CA3AF] mb-4 line-clamp-1">{configArticle.title}</p>
-            <div className="space-y-3">
-              <div>
-                <label className="text-xs text-[#4B5563] mb-1 block">公众号 AppID</label>
-                <input value={wxForm.appId} onChange={e => setWxForm({ ...wxForm, appId: e.target.value })} placeholder="wx...（用于JSSDK签名）" className="w-full border border-[#E5E7EB] rounded-md px-3 py-2 text-sm" />
-              </div>
-              <div>
-                <label className="text-xs text-[#4B5563] mb-1 block">公众号名称</label>
-                <input value={wxForm.name} onChange={e => setWxForm({ ...wxForm, name: e.target.value })} placeholder="QualiForge AI" className="w-full border border-[#E5E7EB] rounded-md px-3 py-2 text-sm" />
-              </div>
-              <div>
-                <label className="text-xs text-[#4B5563] mb-1 block">二维码图片URL</label>
-                <input value={wxForm.qrCode} onChange={e => setWxForm({ ...wxForm, qrCode: e.target.value })} placeholder="https://...（公众号二维码图片地址）" className="w-full border border-[#E5E7EB] rounded-md px-3 py-2 text-sm" />
-              </div>
-              <div>
-                <label className="text-xs text-[#4B5563] mb-1 block">分享暗号</label>
-                <input value={wxForm.shareCode} onChange={e => setWxForm({ ...wxForm, shareCode: e.target.value })} placeholder="article2026（用户回复此暗号获取阅读权限）" className="w-full border border-[#E5E7EB] rounded-md px-3 py-2 text-sm" />
-              </div>
-            </div>
-            <div className="flex gap-2 mt-5">
-              <button onClick={saveConfig} disabled={updateMut.isPending} className="flex-1 px-4 py-2 bg-[#4F46E5] text-white rounded-md text-sm hover:bg-[#4338CA] disabled:opacity-50">
-                {updateMut.isPending ? '保存中...' : '保存'}
-              </button>
-              <button onClick={() => setConfigArticle(null)} className="px-4 py-2 border border-[#E5E7EB] rounded-md text-sm">取消</button>
-            </div>
-          </div>
         </div>
       )}
     </ResponsiveContainer>

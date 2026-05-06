@@ -24,6 +24,7 @@ import AdminSkill from './pages/Admin/AdminSkill'
 import AdminSection from './pages/Admin/AdminSection'
 import AdminUser from './pages/Admin/AdminUser'
 import AdminEvaluation from './pages/Admin/AdminEvaluation'
+import AdminWxConfig from './pages/Admin/AdminWxConfig'
 
 // My pages
 import MyDashboard from './pages/My/MyDashboard'
@@ -79,6 +80,7 @@ export default function App() {
         <Route path="sections" element={<AdminSection />} />
         <Route path="tags" element={<AdminTag />} />
         <Route path="users" element={<AdminUser />} />
+        <Route path="wx-config" element={<AdminWxConfig />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />

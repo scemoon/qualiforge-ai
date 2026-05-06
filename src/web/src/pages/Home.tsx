@@ -22,12 +22,37 @@ async function fetchSections() {
   }
 }
 
+async function fetchSkillTags() {
+  try {
+    const res = await fetch(`${API_BASE}/skill-crud`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'list' }),
+    })
+    return res.json()
+  } catch (e) {
+    console.error('fetchSkillTags error:', e)
+    return { data: { list: [] }, error: String(e) }
+  }
+}
+
 export default function Home() {
   const { isAuthenticated, user, logout } = useAuthStore()
+  const [selectedTag, setSelectedTag] = useState<string | null>(null)
+  const [activeTab, setActiveTab] = useState(0)
+  const [currentPage, setCurrentPage] = useState(0)
+
   const { data, isLoading } = useQuery({
     queryKey: ['sections'],
     queryFn: fetchSections,
   })
+
+  const { data: skillData } = useQuery({
+    queryKey: ['skill-tags'],
+    queryFn: fetchSkillTags,
+  })
+
+  const skillTags = skillData?.data?.list || []
 
   const sections = data?.data?.list || []
   // API returns { _id, data: { title, type, ... } } structure
@@ -39,7 +64,6 @@ export default function Home() {
     articles: s.articles,
     evaluations: s.evaluations,
   }))
-  const [activeTab, setActiveTab] = useState(0)
 
   return (
     <div className="min-h-screen bg-[#F4F6F8]">
@@ -74,6 +98,42 @@ export default function Home() {
         </ResponsiveContainer>
       </div>
 
+      {/* Skill Tag Filter Bar */}
+      {skillTags.length > 0 && (
+        <div className="bg-white border-b border-[#E5E7EB]">
+          <ResponsiveContainer>
+            <div className="flex gap-2 overflow-x-auto scrollbar-hide py-3 -mx-4 px-4 sm:mx-0 sm:px-0">
+              <button
+                onClick={() => { setSelectedTag(null); setCurrentPage(0) }}
+                className={`flex-shrink-0 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                  selectedTag === null
+                    ? 'bg-[#4F46E5] text-white'
+                    : 'bg-[#F3F4F6] text-[#6B7280] hover:bg-[#E5E7EB]'
+                }`}
+              >
+                全部
+              </button>
+              {skillTags.map((tag: any) => {
+                const tagName = tag.name || tag.title || tag._id || ''
+                return (
+                  <button
+                    key={tag._id}
+                    onClick={() => { setSelectedTag(tagName); setCurrentPage(0) }}
+                    className={`flex-shrink-0 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                      selectedTag === tagName
+                        ? 'bg-[#4F46E5] text-white'
+                        : 'bg-[#F3F4F6] text-[#6B7280] hover:bg-[#E5E7EB]'
+                    }`}
+                  >
+                    {tagName}
+                  </button>
+                )
+              })}
+            </div>
+          </ResponsiveContainer>
+        </div>
+      )}
+
       {/* Tab Navigation */}
       <div className="bg-white border-b border-[#E5E7EB] sticky top-0 z-10">
         <ResponsiveContainer>
@@ -81,7 +141,7 @@ export default function Home() {
             {normalizedSections.map((section: any, i: number) => (
               <button
                 key={section._id}
-                onClick={() => setActiveTab(i)}
+                onClick={() => { setActiveTab(i); setCurrentPage(0) }}
                 className={`px-4 sm:px-5 py-3 sm:py-3.5 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
                   activeTab === i
                     ? 'border-indigo-500 text-indigo-600'
@@ -114,7 +174,12 @@ export default function Home() {
         ) : (
           <div>
             {normalizedSections[activeTab] && (
-              <SectionBlock section={normalizedSections[activeTab]} />
+              <SectionBlock
+                section={normalizedSections[activeTab]}
+                selectedTag={selectedTag}
+                currentPage={currentPage}
+                onPageChange={(page) => setCurrentPage(page)}
+              />
             )}
           </div>
         )}
