@@ -27,3 +27,7 @@ npm-debug.log*
 # CloudBase / Tencent Cloud
 .cloudbase/
 .fun/
+# Playwright
+src/web/test-results/
+src/web/playwright.config.ts
+src/web/e2e/

@@ -7,10 +7,18 @@ export default defineConfig({
   build: {
     outDir: '../../dist/web',
     emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        // 内容哈希作为版本号，确保 CDN 缓存失效
+        assetFileNames: 'assets/[name]-[hash][extname]',
+        chunkFileNames: 'assets/[name]-[hash].js',
+        entryFileNames: 'assets/[name]-[hash].js',
+      },
+    },
   },
   resolve: {
     alias: {
       '@': '/src',
-    }
-  }
+    },
+  },
 })
