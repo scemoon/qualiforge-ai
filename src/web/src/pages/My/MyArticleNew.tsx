@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import ArticleEditor from '@/components/common/ArticleEditor'
 
 async function fetchTags() {
   const res = await fetch('https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/article-crud', {
@@ -89,7 +90,7 @@ export default function MyArticleNew() {
 
         <div className="mb-4">
           <div className="flex items-center justify-between mb-1">
-            <label className="text-sm font-medium text-[#4B5563]">文章内容（Markdown）*</label>
+            <label className="text-sm font-medium text-[#4B5563]">文章内容 *</label>
             <button type="button" onClick={() => setPreview(p => !p)} className="text-xs text-[#4F46E5] hover:underline">
               {preview ? '编辑' : '预览'}
             </button>
@@ -99,13 +100,10 @@ export default function MyArticleNew() {
               <ReactMarkdown remarkPlugins={[remarkGfm]}>{content || '*无内容*'}</ReactMarkdown>
             </div>
           ) : (
-            <textarea
-              value={content}
-              onChange={e => setContent(e.target.value)}
-              className="w-full border border-[#E5E7EB] rounded-md px-4 py-3 text-sm font-mono"
-              rows={15}
-              placeholder="支持 Markdown 格式..."
-              required
+            <ArticleEditor
+              content={content}
+              onChange={setContent}
+              placeholder="支持富文本格式..."
             />
           )}
         </div>
