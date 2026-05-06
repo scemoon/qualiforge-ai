@@ -1,17 +1,21 @@
 import { useParams, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import ReactMarkdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import { marked } from 'marked'
 import DOMPurify from 'dompurify'
 import dayjs from 'dayjs'
 import { useAuthStore } from '../store/authStore'
 
 const API = 'https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com'
 
-// TipTap outputs HTML (starts with <), legacy articles use Markdown
-function isHtmlContent(content: string): boolean {
-  return !!(content || '').trim().startsWith('<')
+function renderContent(content: string) {
+  if (!content) return null
+  if (content.trim().startsWith('<')) {
+    // TipTap HTML output — sanitize and render directly
+    return <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content) }} />
+  }
+  // Legacy Markdown — convert to HTML then render
+  const html = marked.parse(content) as string
+  return <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(html) }} />
 }
 
 async function fetchArticle(id: string) {
@@ -87,29 +91,7 @@ export default function ArticleDetail() {
           )}
 
           <div className="prose max-w-none text-sm md:text-base">
-            {isHtmlContent(article.content) ? (
-              <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(article.content || '') }} />
-            ) : (
-              <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                components={{
-                  code({ node, className, children, ...props }) {
-                    const inline = !className
-                    return !inline ? (
-                      <SyntaxHighlighter language="javascript" style={{}} className="rounded-lg text-sm">
-                        {String(children).replace(/\n$/, '')}
-                      </SyntaxHighlighter>
-                    ) : (
-                      <code className="bg-[#F3F4F6] px-1.5 py-0.5 rounded text-sm font-mono" {...props}>
-                        {children}
-                      </code>
-                    )
-                  }
-                }}
-              >
-                {article.content || ''}
-              </ReactMarkdown>
-            )}
+            {renderContent(article.content)}
           </div>
 
           {/* Official synced notice */}

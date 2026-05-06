@@ -37,7 +37,7 @@ export default function MyDashboard() {
           <span className="text-2xl">🔔</span>
           <p className="text-sm font-medium text-[#111827] mt-2">通知中心</p>
         </Link>
-        <a href="/article/search" className="bg-white rounded-lg border border-[#E5E7EB] p-4 text-center hover:border-[#4F46E5] transition">
+        <a href="/" className="bg-white rounded-lg border border-[#E5E7EB] p-4 text-center hover:border-[#4F46E5] transition">
           <span className="text-2xl">📚</span>
           <p className="text-sm font-medium text-[#111827] mt-2">浏览文章</p>
         </a>

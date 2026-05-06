@@ -55,6 +55,7 @@ export default function AdminDashboard() {
       <div className="mt-6 md:mt-8">
         <h2 className="text-base sm:text-lg font-bold text-[#111827] mb-3 md:mb-4">快速操作</h2>
         <div className="flex flex-wrap gap-2 md:gap-3">
+          <a href="/my/article/new" className="px-4 py-2 bg-[#4F46E5] text-white rounded-md text-sm hover:bg-[#4338CA] transition">新建文章</a>
           <a href="/admin/articles/review" className="px-4 py-2 bg-[#F59E0B] text-white rounded-md text-sm hover:bg-[#D97706] transition">审核文章</a>
           <a href="/admin/evaluations" className="px-4 py-2 bg-[#4F46E5] text-white rounded-md text-sm hover:bg-[#4338CA] transition">评测管理</a>
           <a href="/admin/sections" className="px-4 py-2 bg-[#10B981] text-white rounded-md text-sm hover:bg-[#059669] transition">管理板块</a>

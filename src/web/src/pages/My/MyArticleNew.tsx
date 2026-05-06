@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useQuery, useMutation } from '@tanstack/react-query'
-import DOMPurify from 'dompurify'
 import ArticleEditor from '@/components/common/ArticleEditor'
 
 async function fetchTags() {
@@ -26,7 +25,6 @@ export default function MyArticleNew() {
   const [content, setContent] = useState('')
   const [coverImage, setCoverImage] = useState('')
   const [selectedTags, setSelectedTags] = useState<string[]>([])
-  const [preview, setPreview] = useState(false)
 
   const { data: tagsData } = useQuery({ queryKey: ['tags'], queryFn: fetchTags })
   const createMut = useMutation({
@@ -88,21 +86,12 @@ export default function MyArticleNew() {
         </div>
 
         <div className="mb-4">
-          <div className="flex items-center justify-between mb-1">
-            <label className="text-sm font-medium text-[#4B5563]">文章内容 *</label>
-            <button type="button" onClick={() => setPreview(p => !p)} className="text-xs text-[#4F46E5] hover:underline">
-              {preview ? '编辑' : '预览'}
-            </button>
-          </div>
-          {preview ? (
-            <div className="border border-[#E5E7EB] rounded-md p-4 min-h-[300px] prose max-w-none text-sm" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content || '<p style=\"color:#9CA3AF\">无内容</p>') }} />
-          ) : (
-            <ArticleEditor
-              content={content}
-              onChange={setContent}
-              placeholder="支持富文本格式..."
-            />
-          )}
+          <label className="text-sm font-medium text-[#4B5563] block mb-1">文章内容 *</label>
+          <ArticleEditor
+            content={content}
+            onChange={setContent}
+            placeholder="支持富文本格式..."
+          />
         </div>
 
         <div className="flex items-center gap-3">

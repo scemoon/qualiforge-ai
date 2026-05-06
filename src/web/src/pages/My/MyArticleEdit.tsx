@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams, useNavigate, Link } from 'react-router-dom'
 import { useQuery, useMutation } from '@tanstack/react-query'
-import DOMPurify from 'dompurify'
 import ArticleEditor from '@/components/common/ArticleEditor'
 
 async function fetchArticle(id: string) {
@@ -37,7 +36,6 @@ export default function MyArticleEdit() {
   const [content, setContent] = useState('')
   const [coverImage, setCoverImage] = useState('')
   const [selectedTags, setSelectedTags] = useState<string[]>([])
-  const [preview, setPreview] = useState(false)
   const [fullscreen, setFullscreen] = useState(false)
 
   const { data: articleData, isLoading: loadingArticle } = useQuery({
@@ -96,26 +94,17 @@ export default function MyArticleEdit() {
       {/* Toolbar row */}
       <div className="flex items-center justify-between mb-1">
         <span className="text-xs text-[#9CA3AF]">富文本编辑</span>
-        <div className="flex items-center gap-2">
-          <button type="button" onClick={() => setPreview(p => !p)} className="text-xs text-[#4F46E5] hover:underline">
-            {preview ? '✏️ 编辑' : '👁️ 预览'}
-          </button>
-          <button type="button" onClick={() => setFullscreen(f => !f)} className="text-xs text-[#6B7280] hover:text-[#374151]">
-            {fullscreen ? '⛶ 退出全屏' : '⛶ 全屏'}
-          </button>
-        </div>
+        <button type="button" onClick={() => setFullscreen(f => !f)} className="text-xs text-[#6B7280] hover:text-[#374151]">
+          {fullscreen ? '⛶ 退出全屏' : '⛶ 全屏'}
+        </button>
       </div>
 
-      {/* Editor / Preview */}
-      {preview ? (
-        <div className="border border-[#E5E7EB] rounded-md p-4 min-h-[300px] prose max-w-none text-sm" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content || '<p style=\"color:#9CA3AF\">无内容</p>') }} />
-      ) : (
-        <ArticleEditor
-          content={content}
-          onChange={setContent}
-          placeholder="支持富文本格式..."
-        />
-      )}
+      {/* Editor */}
+      <ArticleEditor
+        content={content}
+        onChange={setContent}
+        placeholder="支持富文本格式..."
+      />
     </>
   )
 
@@ -141,7 +130,6 @@ export default function MyArticleEdit() {
             <ArticleEditor
               content={content}
               onChange={setContent}
-              fullscreen
               placeholder="支持富文本格式..."
             />
           </div>
