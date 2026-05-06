@@ -7,8 +7,6 @@ import CodeBlock from '@tiptap/extension-code-block'
 import TaskList from '@tiptap/extension-task-list'
 import TaskItem from '@tiptap/extension-task-item'
 import { Markdown } from '@tiptap/markdown'
-import { marked } from 'marked'
-import DOMPurify from 'dompurify'
 import { useEffect, useCallback, useState } from 'react'
 
 interface ArticleEditorProps {
@@ -44,8 +42,8 @@ export default function ArticleEditor({ content, onChange, placeholder = '开始
       }),
     ],
     onUpdate: ({ editor }) => {
-      const md = editor.storage.markdown.manager.serialize(editor.getJSON())
-      onChange(md)
+      // TipTap v3: editor.getMarkdown() is on the Editor interface
+      onChange(editor.getMarkdown())
     },
     editorProps: {
       attributes: {
@@ -54,19 +52,15 @@ export default function ArticleEditor({ content, onChange, placeholder = '开始
     },
   })
 
-  // Load content — detect HTML (old data) vs Markdown, convert HTML to Markdown if needed
+  // Load content: TipTap v3 supports Markdown directly via setContent + contentType
   useEffect(() => {
-    if (!editor || !content) return
-    if (content.trim().startsWith('<')) {
-      // Old HTML article → convert to Markdown then load
-      const md = marked.parse(DOMPurify.sanitize(content)) as string
-      const json = editor.storage.markdown.manager.parse(md)
-      editor.commands.setContent(json, { emitUpdate: false })
-    } else {
-      // New Markdown article → parse and load directly
-      const json = editor.storage.markdown.manager.parse(content)
-      editor.commands.setContent(json, { emitUpdate: false })
+    if (!editor) return
+    if (!content) {
+      editor.commands.clearContent()
+      return
     }
+    // Use setContent with contentType: 'markdown' for Markdown input
+    editor.commands.setContent(content, { contentType: 'markdown' })
   }, [content, editor])
 
   const setLink = useCallback(() => {
@@ -90,28 +84,28 @@ export default function ArticleEditor({ content, onChange, placeholder = '开始
 
   if (!editor) return null
 
-  const toolbarGroups: Array<ToolbarBtn | '|'> = [
-    { label: 'H1', title: '一级标题', action: () => editor.chain().focus().toggleHeading({ level: 1 }).run(), active: () => editor.isActive('heading', { level: 1 }) },
-    { label: 'H2', title: '二级标题', action: () => editor.chain().focus().toggleHeading({ level: 2 }).run(), active: () => editor.isActive('heading', { level: 2 }) },
-    { label: 'H3', title: '三级标题', action: () => editor.chain().focus().toggleHeading({ level: 3 }).run(), active: () => editor.isActive('heading', { level: 3 }) },
-    '|',
-    { label: 'B', title: '粗体', action: () => editor.chain().focus().toggleBold().run(), active: () => editor.isActive('bold') },
-    { label: 'I', title: '斜体', action: () => editor.chain().focus().toggleItalic().run(), active: () => editor.isActive('italic') },
-    { label: '❝', title: '引用', action: () => editor.chain().focus().toggleBlockquote().run(), active: () => editor.isActive('blockquote') },
-    '|',
-    { label: '•', title: '无序列表', action: () => editor.chain().focus().toggleBulletList().run(), active: () => editor.isActive('bulletList') },
-    { label: '1.', title: '有序列表', action: () => editor.chain().focus().toggleOrderedList().run(), active: () => editor.isActive('orderedList') },
-    '|',
-    { label: '🔗', title: '链接', action: setLink, active: () => editor.isActive('link') },
-    { label: '📷', title: '图片', action: setImage },
-    { label: '```', title: '代码块', action: () => editor.chain().focus().toggleCodeBlock().run(), active: () => editor.isActive('codeBlock') },
-    { label: '—', title: '分割线', action: insertHorizontalRule },
-    '|',
-    { label: '⛶', title: isFullscreen ? '退出全屏' : '全屏', action: toggleFullscreen },
-  ]
-
   function renderToolbar() {
-    return toolbarGroups.map((btn, idx) =>
+    const groups: Array<ToolbarBtn | '|'> = [
+      { label: 'H1', title: '一级标题', action: () => editor.chain().focus().toggleHeading({ level: 1 }).run(), active: () => editor.isActive('heading', { level: 1 }) },
+      { label: 'H2', title: '二级标题', action: () => editor.chain().focus().toggleHeading({ level: 2 }).run(), active: () => editor.isActive('heading', { level: 2 }) },
+      { label: 'H3', title: '三级标题', action: () => editor.chain().focus().toggleHeading({ level: 3 }).run(), active: () => editor.isActive('heading', { level: 3 }) },
+      '|',
+      { label: 'B', title: '粗体', action: () => editor.chain().focus().toggleBold().run(), active: () => editor.isActive('bold') },
+      { label: 'I', title: '斜体', action: () => editor.chain().focus().toggleItalic().run(), active: () => editor.isActive('italic') },
+      { label: '❝', title: '引用', action: () => editor.chain().focus().toggleBlockquote().run(), active: () => editor.isActive('blockquote') },
+      '|',
+      { label: '•', title: '无序列表', action: () => editor.chain().focus().toggleBulletList().run(), active: () => editor.isActive('bulletList') },
+      { label: '1.', title: '有序列表', action: () => editor.chain().focus().toggleOrderedList().run(), active: () => editor.isActive('orderedList') },
+      '|',
+      { label: '🔗', title: '链接', action: setLink, active: () => editor.isActive('link') },
+      { label: '📷', title: '图片', action: setImage },
+      { label: '```', title: '代码块', action: () => editor.chain().focus().toggleCodeBlock().run(), active: () => editor.isActive('codeBlock') },
+      { label: '—', title: '分割线', action: insertHorizontalRule },
+      '|',
+      { label: '⛶', title: isFullscreen ? '退出全屏' : '全屏', action: toggleFullscreen },
+    ]
+
+    return groups.map((btn, idx) =>
       btn === '|'
         ? <span key={`sep-${idx}`} className="w-px h-5 bg-[#E5E7EB] self-center mx-0.5" />
         : (
@@ -132,13 +126,13 @@ export default function ArticleEditor({ content, onChange, placeholder = '开始
     )
   }
 
-  const editorContent = (
-    <div className="border border-[#E5E7EB] rounded-md bg-white flex flex-col" style={{ height: isFullscreen ? 'calc(100vh - 120px)' : 500 }}>
+  const editorBox = (
+    <div className="border border-[#E5E7EB] rounded-md bg-white flex flex-col" style={{ height: 500 }}>
       <div className="flex flex-wrap gap-0.5 px-3 py-2 border-b border-[#E5E7EB]">
         {renderToolbar()}
       </div>
       <div className="flex-1 overflow-auto">
-        <EditorContent editor={editor} className="h-full" />
+        <EditorContent editor={editor} />
       </div>
     </div>
   )
@@ -146,19 +140,26 @@ export default function ArticleEditor({ content, onChange, placeholder = '开始
   if (isFullscreen) {
     return (
       <div className="fixed inset-0 z-50 bg-white flex flex-col">
-        <div className="flex items-center justify-between px-4 py-3 border-b border-[#E5E7EB] bg-white">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-[#E5E7EB]">
           <h1 className="text-lg font-bold text-[#111827]">富文本编辑</h1>
           <div className="flex items-center gap-3">
-            <span className="text-xs text-[#9CA3AF]">{editor.storage.markdown.manager.serialize(editor.getJSON()).length} 字符</span>
+            <span className="text-xs text-[#9CA3AF]">{editor.getMarkdown().length} 字符</span>
             <button onClick={toggleFullscreen} className="px-3 py-1.5 text-sm border border-[#E5E7EB] rounded-md hover:bg-[#F9FAFB] text-[#4B5563]">退出全屏</button>
           </div>
         </div>
-        <div className="flex-1 flex flex-col overflow-hidden px-3 py-2">
-          {editorContent}
+        <div className="flex-1 flex flex-col overflow-hidden px-4 py-3">
+          <div className="border border-[#E5E7EB] rounded-md bg-white flex flex-col flex-1">
+            <div className="flex flex-wrap gap-0.5 px-3 py-2 border-b border-[#E5E7EB]">
+              {renderToolbar()}
+            </div>
+            <div className="flex-1 overflow-auto">
+              <EditorContent editor={editor} />
+            </div>
+          </div>
         </div>
       </div>
     )
   }
 
-  return editorContent
+  return editorBox
 }
