@@ -17,7 +17,5 @@ jobs:
           cache: 'npm'
           cache-dependency-path: src/web/package-lock.json
       - run: cd src/web && npm ci && npm run build
-      - uses: cloudbase/actions/cloudbase-action@v1
-        with:
-          env-id: \${{ secrets.CLOUDBASE_ENV_ID }}
-          args: hosting deploy dist/web / --force
+      - name: Deploy to CloudBase CDN
+        run: npx tcb hosting deploy dist/web / --force --env-id ${{ secrets.CLOUDBASE_ENV_ID }}
