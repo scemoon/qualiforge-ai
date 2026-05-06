@@ -23,6 +23,9 @@ jobs:
           cache: 'npm'
           cache-dependency-path: src/web/package-lock.json
 
+      - name: Install CloudBase CLI
+        run: npm install -g @cloudbase/cli
+
       # ── Build Web App ────────────────────────────────────────────────
       - name: Build web app
         run: |
