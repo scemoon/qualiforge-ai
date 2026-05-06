@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import dayjs from 'dayjs'
+import ResponsiveContainer from '../../components/common/ResponsiveContainer'
 
 async function fetchNotifications() {
   const res = await fetch('https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/notification-crud', {
@@ -42,9 +43,9 @@ export default function MyNotifications() {
   const notifications = data?.data?.list || []
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-[#111827]">通知中心</h1>
+    <ResponsiveContainer className="py-6 md:py-8">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4 md:mb-6">
+        <h1 className="text-2xl sm:text-3xl font-bold text-[#111827]">通知中心</h1>
         <button
           onClick={() => markAllMut.mutate()}
           disabled={markAllMut.isPending}
@@ -65,7 +66,7 @@ export default function MyNotifications() {
               key={n._id}
               className={`bg-white rounded-lg border p-4 ${n.read ? 'border-[#E5E7EB]' : 'border-[#4F46E5] bg-[#EEF2FF]'}`}
             >
-              <div className="flex items-start justify-between">
+              <div className="flex items-start justify-between gap-2">
                 <div>
                   <p className={`text-sm font-medium ${n.read ? 'text-[#4B5563]' : 'text-[#111827]'}`}>{n.title}</p>
                   {n.content && <p className="text-sm text-[#4B5563] mt-1">{n.content}</p>}
@@ -73,7 +74,7 @@ export default function MyNotifications() {
                 {!n.read && (
                   <button
                     onClick={() => markOneMut.mutate(n._id)}
-                    className="text-xs text-[#4F46E5] hover:underline"
+                    className="text-xs text-[#4F46E5] hover:underline whitespace-nowrap"
                   >
                     标为已读
                   </button>
@@ -84,6 +85,6 @@ export default function MyNotifications() {
           ))}
         </div>
       )}
-    </div>
+    </ResponsiveContainer>
   )
 }

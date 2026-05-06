@@ -6,14 +6,14 @@ import { useAuthStore } from './store/authStore'
 
 // Public pages
 import Home from './pages/Home'
-import Leaderboard from './pages/Leaderboard'
-import ArticleSearch from './pages/ArticleSearch'
-import ArticleDetail from './pages/ArticleDetail'
 import Tags from './pages/Tags'
 import ExpertProfile from './pages/ExpertProfile'
 import Search from './pages/Search'
 import Login from './pages/Login'
 import Register from './pages/Register'
+
+// Standalone pages (no common layout)
+import ArticleDetail from './pages/ArticleDetail'
 
 // Admin pages
 import AdminDashboard from './pages/Admin/AdminDashboard'
@@ -30,6 +30,7 @@ import MyDashboard from './pages/My/MyDashboard'
 import MyArticleNew from './pages/My/MyArticleNew'
 import MyCollection from './pages/My/MyCollection'
 import MyNotifications from './pages/My/MyNotifications'
+import MyArticleEdit from './pages/My/MyArticleEdit'
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useAuthStore()
@@ -47,11 +48,11 @@ export default function App() {
       {/* Home - standalone, no default header/footer */}
       <Route path="/" element={<Home />} />
 
+      {/* ArticleDetail - standalone with its own header */}
+      <Route path="/article/:id" element={<ArticleDetail />} />
+
       {/* Public */}
       <Route element={<PublicLayout />}>
-        <Route path="/leaderboard" element={<Leaderboard />} />
-        <Route path="/article/search" element={<ArticleSearch />} />
-        <Route path="/article/:id" element={<ArticleDetail />} />
         <Route path="/tags" element={<Tags />} />
         <Route path="/search" element={<Search />} />
         <Route path="/expert/:id" element={<ExpertProfile />} />
@@ -63,6 +64,7 @@ export default function App() {
       <Route path="/my" element={<RequireAuth><MyLayout /></RequireAuth>}>
         <Route index element={<MyDashboard />} />
         <Route path="article/new" element={<MyArticleNew />} />
+        <Route path="edit" element={<MyArticleEdit />} />
         <Route path="collection" element={<MyCollection />} />
         <Route path="notifications" element={<MyNotifications />} />
       </Route>

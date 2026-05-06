@@ -35,8 +35,8 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-64px)] flex items-center justify-center px-4">
-      <div className="w-full max-w-md bg-white rounded-lg border border-[#E5E7EB] p-8">
+    <div className="min-h-[calc(100vh-64px)] flex items-center justify-center px-4 sm:px-6 py-6">
+      <div className="w-full max-w-md bg-white rounded-lg border border-[#E5E7EB] p-6 sm:p-8">
         <h1 className="text-2xl font-bold text-[#111827] mb-6 text-center">登录</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>

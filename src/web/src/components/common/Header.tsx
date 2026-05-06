@@ -11,12 +11,13 @@ export default function Header() {
           <span className="text-xl font-bold text-[#4F46E5]">⚡ QualiForge</span>
           <span className="text-sm text-[#4B5563] hidden sm:inline">AI Coding 质量保障</span>
         </Link>
-        <nav className="flex items-center gap-4 text-sm">
+        <nav className="flex items-center gap-3 text-sm">
           {isAuthenticated ? (
             <>
-              <Link to="/my" className="text-[#4B5563] hover:text-[#4F46E5] transition">专家中心</Link>
-              {user?.role === 'admin' && (
+              {user?.role === 'admin' ? (
                 <Link to="/admin" className="text-[#F59E0B] font-medium hover:underline">管理后台</Link>
+              ) : (
+                <Link to="/my" className="text-[#4B5563] hover:text-[#4F46E5] transition">专家中心</Link>
               )}
               <button onClick={logout} className="text-[#9CA3AF] hover:text-[#EF4444] transition">退出</button>
             </>

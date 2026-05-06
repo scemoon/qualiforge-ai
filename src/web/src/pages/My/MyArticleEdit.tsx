@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams, useNavigate, Link } from 'react-router-dom'
 import { useQuery, useMutation } from '@tanstack/react-query'
-import ReactMarkdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
+import DOMPurify from 'dompurify'
 import ArticleEditor from '@/components/common/ArticleEditor'
 
 async function fetchArticle(id: string) {
@@ -109,9 +108,7 @@ export default function MyArticleEdit() {
 
       {/* Editor / Preview */}
       {preview ? (
-        <div className="border border-[#E5E7EB] rounded-md p-4 min-h-[300px] prose max-w-none text-sm">
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>{content || '*无内容*'}</ReactMarkdown>
-        </div>
+        <div className="border border-[#E5E7EB] rounded-md p-4 min-h-[300px] prose max-w-none text-sm" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content || '<p style=\"color:#9CA3AF\">无内容</p>') }} />
       ) : (
         <ArticleEditor
           content={content}
