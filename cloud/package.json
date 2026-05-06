@@ -1,5 +1,7 @@
 {
   "dependencies": {
-    "@cloudbase/node-sdk": "^3.18.1"
+    "@cloudbase/manager-node": "^5.2.0",
+    "@cloudbase/node-sdk": "^3.18.1",
+    "nodemailer": "^6.9.0"
   }
 }
