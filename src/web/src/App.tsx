@@ -22,7 +22,6 @@ import AdminArticleReview from './pages/Admin/AdminArticleReview'
 import AdminTag from './pages/Admin/AdminTag'
 import AdminSkill from './pages/Admin/AdminSkill'
 import AdminSection from './pages/Admin/AdminSection'
-import AdminUser from './pages/Admin/AdminUser'
 import AdminEvaluation from './pages/Admin/AdminEvaluation'
 import AdminWxConfig from './pages/Admin/AdminWxConfig'
 
@@ -79,7 +78,6 @@ export default function App() {
         <Route path="skills" element={<AdminSkill />} />
         <Route path="sections" element={<AdminSection />} />
         <Route path="tags" element={<AdminTag />} />
-        <Route path="users" element={<AdminUser />} />
         <Route path="wx-config" element={<AdminWxConfig />} />
       </Route>
 
