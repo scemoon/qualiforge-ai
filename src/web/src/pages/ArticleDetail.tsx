@@ -7,17 +7,6 @@ import { useAuthStore } from '../store/authStore'
 
 const API = 'https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com'
 
-function renderContent(content: string) {
-  if (!content) return null
-  if (content.trim().startsWith('<')) {
-    // TipTap HTML output — sanitize and render directly
-    return <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content) }} />
-  }
-  // Legacy Markdown — convert to HTML then render
-  const html = marked.parse(content) as string
-  return <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(html) }} />
-}
-
 async function fetchArticle(id: string) {
   const res = await fetch(`${API}/article-crud`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -91,7 +80,7 @@ export default function ArticleDetail() {
           )}
 
           <div className="prose max-w-none text-sm md:text-base">
-            {renderContent(article.content)}
+            <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(marked.parse(article.content || '') as string) }} />
           </div>
 
           {/* Official synced notice */}

@@ -7,6 +7,8 @@ import CodeBlock from '@tiptap/extension-code-block'
 import TaskList from '@tiptap/extension-task-list'
 import TaskItem from '@tiptap/extension-task-item'
 import { Markdown } from '@tiptap/markdown'
+import { marked } from 'marked'
+import DOMPurify from 'dompurify'
 import { useEffect, useCallback, useState } from 'react'
 
 interface ArticleEditorProps {
@@ -41,7 +43,6 @@ export default function ArticleEditor({ content, onChange, placeholder = '开始
         indentation: { style: 'space', size: 2 },
       }),
     ],
-    content,
     onUpdate: ({ editor }) => {
       const md = editor.storage.markdown.manager.serialize(editor.getJSON())
       onChange(md)
@@ -53,13 +54,19 @@ export default function ArticleEditor({ content, onChange, placeholder = '开始
     },
   })
 
-  // Sync external content — load Markdown directly into TipTap
+  // Load content — detect HTML (old data) vs Markdown, convert HTML to Markdown if needed
   useEffect(() => {
-    if (!editor) return
-    if (!content) { editor.commands.clearContent(); return }
-    // content is Markdown string
-    const json = editor.storage.markdown.manager.parse(content)
-    editor.commands.setContent(json, { emitUpdate: false })
+    if (!editor || !content) return
+    if (content.trim().startsWith('<')) {
+      // Old HTML article → convert to Markdown then load
+      const md = marked.parse(DOMPurify.sanitize(content)) as string
+      const json = editor.storage.markdown.manager.parse(md)
+      editor.commands.setContent(json, { emitUpdate: false })
+    } else {
+      // New Markdown article → parse and load directly
+      const json = editor.storage.markdown.manager.parse(content)
+      editor.commands.setContent(json, { emitUpdate: false })
+    }
   }, [content, editor])
 
   const setLink = useCallback(() => {
@@ -125,6 +132,17 @@ export default function ArticleEditor({ content, onChange, placeholder = '开始
     )
   }
 
+  const editorContent = (
+    <div className="border border-[#E5E7EB] rounded-md bg-white flex flex-col" style={{ height: isFullscreen ? 'calc(100vh - 120px)' : 500 }}>
+      <div className="flex flex-wrap gap-0.5 px-3 py-2 border-b border-[#E5E7EB]">
+        {renderToolbar()}
+      </div>
+      <div className="flex-1 overflow-auto">
+        <EditorContent editor={editor} className="h-full" />
+      </div>
+    </div>
+  )
+
   if (isFullscreen) {
     return (
       <div className="fixed inset-0 z-50 bg-white flex flex-col">
@@ -135,26 +153,12 @@ export default function ArticleEditor({ content, onChange, placeholder = '开始
             <button onClick={toggleFullscreen} className="px-3 py-1.5 text-sm border border-[#E5E7EB] rounded-md hover:bg-[#F9FAFB] text-[#4B5563]">退出全屏</button>
           </div>
         </div>
-        <div className="flex-1 flex flex-col overflow-hidden">
-          <div className="flex flex-wrap gap-0.5 px-3 py-2 border-b border-[#E5E7EB] bg-white">
-            {renderToolbar()}
-          </div>
-          <div className="flex-1 overflow-auto">
-            <EditorContent editor={editor} className="h-full" />
-          </div>
+        <div className="flex-1 flex flex-col overflow-hidden px-3 py-2">
+          {editorContent}
         </div>
       </div>
     )
   }
 
-  return (
-    <div className="border border-[#E5E7EB] rounded-md bg-white flex flex-col" style={{ height: 500 }}>
-      <div className="flex flex-wrap gap-0.5 px-3 py-2 border-b border-[#E5E7EB]">
-        {renderToolbar()}
-      </div>
-      <div className="flex-1 overflow-auto">
-        <EditorContent editor={editor} className="h-full" />
-      </div>
-    </div>
-  )
+  return editorContent
 }
