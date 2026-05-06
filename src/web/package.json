@@ -30,6 +30,7 @@
     "react-syntax-highlighter": "^15.5.0",
     "remark-gfm": "^4.0.0",
     "tdesign-react": "^1.5.0",
+    "turndown": "^7.2.4",
     "zustand": "^4.5.0"
   },
   "devDependencies": {

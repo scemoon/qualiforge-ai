@@ -6,7 +6,24 @@ import Placeholder from '@tiptap/extension-placeholder'
 import CodeBlock from '@tiptap/extension-code-block'
 import TaskList from '@tiptap/extension-task-list'
 import TaskItem from '@tiptap/extension-task-item'
+import TurndownService from 'turndown'
 import { useEffect, useCallback } from 'react'
+
+const td = new TurndownService({ headingStyle: 'atx', codeBlockStyle: 'fenced' })
+// 修复 turndown 对 code block 的处理
+td.addRule('fencedCodeBlock', {
+  filter: 'pre',
+  replacement: (_content, node) => {
+    const code = (node as HTMLElement).querySelector('code')
+    const lang = code?.className?.replace('language-', '') || ''
+    return '```' + lang + '\n' + (code?.textContent || '') + '\n```\n'
+  }
+})
+
+function htmlToMd(html: string): string {
+  if (!html || html === '<p></p>' || html === '<p><br></p>') return ''
+  return td.turndown(html)
+}
 
 interface ArticleEditorProps {
   content: string
@@ -38,7 +55,7 @@ export default function ArticleEditor({ content, onChange, fullscreen = false, p
     ],
     content,
     onUpdate: ({ editor }) => {
-      onChange(editor.getHTML())
+      onChange(htmlToMd(editor.getHTML()))
     },
     editorProps: {
       attributes: {
@@ -47,10 +64,17 @@ export default function ArticleEditor({ content, onChange, fullscreen = false, p
     },
   })
 
-  // Sync external content changes (e.g., loading saved article)
+  // Sync external content — Markdown stored, TipTap displays as HTML
   useEffect(() => {
-    if (editor && content !== editor.getHTML()) {
-      editor.commands.setContent(content || '', { emitUpdate: false })
+    if (!editor) return
+    if (!content) { editor.commands.clearContent(); return }
+    if (content.startsWith('<')) {
+      // HTML from TipTap — already in display format
+      editor.commands.setContent(content, { emitUpdate: false })
+    } else {
+      // Markdown from storage — convert to HTML for TipTap display
+      const html = td.turndown(content)
+      editor.commands.setContent(html || '<p></p>', { emitUpdate: false })
     }
   }, [content, editor])
 
