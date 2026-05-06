@@ -57,7 +57,7 @@ export default function MyArticleNew() {
   }
 
   return (
-    <div>
+    <div className="max-w-3xl mx-auto px-4 py-6">
       <h1 className="text-2xl font-bold text-[#111827] mb-6">发布文章</h1>
 
       <form onSubmit={handleSubmit} className="bg-white rounded-lg border border-[#E5E7EB] p-6">

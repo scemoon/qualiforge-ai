@@ -36,7 +36,6 @@ export default function MyArticleEdit() {
   const [content, setContent] = useState('')
   const [coverImage, setCoverImage] = useState('')
   const [selectedTags, setSelectedTags] = useState<string[]>([])
-  const [fullscreen, setFullscreen] = useState(false)
 
   const { data: articleData, isLoading: loadingArticle } = useQuery({
     queryKey: ['article', id],
@@ -89,55 +88,6 @@ export default function MyArticleEdit() {
     <div className="max-w-3xl mx-auto px-4 py-8 text-center text-[#9CA3AF]">加载中...</div>
   )
 
-  const editorArea = (
-    <>
-      {/* Toolbar row */}
-      <div className="flex items-center justify-between mb-1">
-        <span className="text-xs text-[#9CA3AF]">富文本编辑</span>
-        <button type="button" onClick={() => setFullscreen(f => !f)} className="text-xs text-[#6B7280] hover:text-[#374151]">
-          {fullscreen ? '⛶ 退出全屏' : '⛶ 全屏'}
-        </button>
-      </div>
-
-      {/* Editor */}
-      <ArticleEditor
-        content={content}
-        onChange={setContent}
-        placeholder="支持富文本格式..."
-      />
-    </>
-  )
-
-  if (fullscreen) {
-    return (
-      <div className="fixed inset-0 z-50 bg-white flex flex-col">
-        <div className="flex items-center justify-between px-4 py-3 border-b border-[#E5E7EB] bg-white">
-          <div className="flex items-center gap-3">
-            <button onClick={() => setFullscreen(false)} className="text-[#4B5563] hover:text-[#111827] text-lg">←</button>
-            <h1 className="text-lg font-bold text-[#111827]">编辑文章</h1>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="text-xs text-[#9CA3AF]">{content.replace(/<[^>]+>/g, '').length} 字符</span>
-            <button type="button" onClick={() => setFullscreen(false)} className="px-3 py-1.5 text-sm border border-[#E5E7EB] rounded-md hover:bg-[#F9FAFB] text-[#4B5563]">取消</button>
-            <button onClick={handleSubmit} disabled={updateMut.isPending} className="px-4 py-1.5 bg-[#4F46E5] text-white rounded-md text-sm hover:bg-[#4338CA] disabled:opacity-50">
-              {updateMut.isPending ? '保存中...' : '保存'}
-            </button>
-          </div>
-        </div>
-        <div className="flex-1 flex flex-col overflow-hidden p-4">
-          <input type="text" value={title} onChange={e => setTitle(e.target.value)} className="w-full border border-[#E5E7EB] rounded-md px-4 py-2.5 text-base font-medium mb-3" placeholder="文章标题" required />
-          <div className="flex-1 overflow-hidden">
-            <ArticleEditor
-              content={content}
-              onChange={setContent}
-              placeholder="支持富文本格式..."
-            />
-          </div>
-        </div>
-      </div>
-    )
-  }
-
   return (
     <div className="max-w-3xl mx-auto px-4 py-6">
       <div className="flex items-center justify-between mb-6">
@@ -175,7 +125,11 @@ export default function MyArticleEdit() {
 
         <div className="mb-4">
           <label className="text-sm font-medium text-[#4B5563] block mb-1">文章内容 *</label>
-          {editorArea}
+          <ArticleEditor
+            content={content}
+            onChange={setContent}
+            placeholder="支持富文本格式..."
+          />
         </div>
 
         <div className="flex items-center gap-3">
