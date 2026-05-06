@@ -9,7 +9,6 @@ const navItems = [
   { path: '/admin/evaluations', label: '评测管理', icon: '🎯' },
   { path: '/admin/sections', label: '板块管理', icon: '📋' },
   { path: '/admin/tags', label: '标签管理', icon: '🏷️' },
-  { path: '/admin/users', label: '用户管理', icon: '👥' },
   { path: '/admin/wx-config', label: '公众号配置', icon: '📌' },
 ]
 
