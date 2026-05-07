@@ -24,3 +24,9 @@ jobs:
         run: npm install -g @cloudbase/cli
       - name: Deploy to CloudBase CDN
         run: tcb hosting deploy dist/web / --force --env-id ${{ secrets.CLOUDBASE_ENV_ID }}
+      - name: Deploy Cloud Functions
+        run: |
+          cd cloud
+          for fn in auth article-crud skill-crud evaluation-crud section-crud notification-crud user-crud search file-upload wechat-sync data-seeder section-reset; do
+            tcb fn deploy "$fn" --env-id ${{ secrets.CLOUDBASE_ENV_ID }} --force
+          done
