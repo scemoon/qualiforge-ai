@@ -29,6 +29,10 @@ export default function MyDashboard() {
           <span className="text-2xl">✏️</span>
           <p className="text-sm font-medium text-[#111827] mt-2">发布文章</p>
         </Link>
+        <Link to="/my/articles" className="bg-white rounded-lg border border-[#E5E7EB] p-4 text-center hover:border-[#4F46E5] transition">
+          <span className="text-2xl">📝</span>
+          <p className="text-sm font-medium text-[#111827] mt-2">我的文章</p>
+        </Link>
         <Link to="/my/collection" className="bg-white rounded-lg border border-[#E5E7EB] p-4 text-center hover:border-[#4F46E5] transition">
           <span className="text-2xl">❤️</span>
           <p className="text-sm font-medium text-[#111827] mt-2">我的收藏</p>

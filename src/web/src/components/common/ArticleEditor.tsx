@@ -1,72 +1,238 @@
-import { useEditor, EditorContent } from '@tiptap/react'
-import StarterKit from '@tiptap/starter-kit'
-import Link from '@tiptap/extension-link'
-import Image from '@tiptap/extension-image'
-import Placeholder from '@tiptap/extension-placeholder'
-import CodeBlock from '@tiptap/extension-code-block'
-import TaskList from '@tiptap/extension-task-list'
-import TaskItem from '@tiptap/extension-task-item'
+"use client"
+
+import { useEffect, useRef, useState } from 'react'
+import { EditorContent, EditorContext, useEditor } from '@tiptap/react'
+
+import { StarterKit } from '@tiptap/starter-kit'
+import { Image } from '@tiptap/extension-image'
+import { TaskItem, TaskList } from '@tiptap/extension-list'
+import { TextAlign } from '@tiptap/extension-text-align'
+import { Typography } from '@tiptap/extension-typography'
+import { Highlight } from '@tiptap/extension-highlight'
+import { Subscript } from '@tiptap/extension-subscript'
+import { Superscript } from '@tiptap/extension-superscript'
+import { Selection } from '@tiptap/extensions'
+import { Link } from '@tiptap/extension-link'
+import { Placeholder } from '@tiptap/extension-placeholder'
+import { CodeBlock } from '@tiptap/extension-code-block'
 import { Markdown } from '@tiptap/markdown'
-import { useEffect, useState, useCallback, useRef } from 'react'
+
+import { Button } from '@/components/tiptap-ui-primitive/button'
+import { Spacer } from '@/components/tiptap-ui-primitive/spacer'
+import {
+  Toolbar,
+  ToolbarGroup,
+  ToolbarSeparator,
+} from '@/components/tiptap-ui-primitive/toolbar'
+
+import { ImageUploadNode } from '@/components/tiptap-node/image-upload-node/image-upload-node-extension'
+import { HorizontalRule } from '@/components/tiptap-node/horizontal-rule-node/horizontal-rule-node-extension'
+import '@/components/tiptap-node/blockquote-node/blockquote-node.scss'
+import '@/components/tiptap-node/code-block-node/code-block-node.scss'
+import '@/components/tiptap-node/horizontal-rule-node/horizontal-rule-node.scss'
+import '@/components/tiptap-node/list-node/list-node.scss'
+import '@/components/tiptap-node/image-node/image-node.scss'
+import '@/components/tiptap-node/heading-node/heading-node.scss'
+import '@/components/tiptap-node/paragraph-node/paragraph-node.scss'
+
+import { HeadingDropdownMenu } from '@/components/tiptap-ui/heading-dropdown-menu'
+import { ImageUploadButton } from '@/components/tiptap-ui/image-upload-button'
+import { ListDropdownMenu } from '@/components/tiptap-ui/list-dropdown-menu'
+import { BlockquoteButton } from '@/components/tiptap-ui/blockquote-button'
+import { CodeBlockButton } from '@/components/tiptap-ui/code-block-button'
+import {
+  ColorHighlightPopover,
+  ColorHighlightPopoverContent,
+  ColorHighlightPopoverButton,
+} from '@/components/tiptap-ui/color-highlight-popover'
+import {
+  LinkPopover,
+  LinkContent,
+  LinkButton,
+} from '@/components/tiptap-ui/link-popover'
+import { MarkButton } from '@/components/tiptap-ui/mark-button'
+import { TextAlignButton } from '@/components/tiptap-ui/text-align-button'
+import { UndoRedoButton } from '@/components/tiptap-ui/undo-redo-button'
+
+import { ArrowLeftIcon } from '@/components/tiptap-icons/arrow-left-icon'
+import { HighlighterIcon } from '@/components/tiptap-icons/highlighter-icon'
+import { LinkIcon } from '@/components/tiptap-icons/link-icon'
+
+import { useIsBreakpoint } from '@/hooks/use-is-breakpoint'
+import { useWindowSize } from '@/hooks/use-window-size'
+import { useCursorVisibility } from '@/hooks/use-cursor-visibility'
+
+import { ThemeToggle } from '@/components/tiptap-templates/simple/theme-toggle'
+import { handleImageUpload, MAX_FILE_SIZE } from '@/lib/tiptap-utils'
+
+import '@/components/tiptap-templates/simple/simple-editor.scss'
+
 interface ArticleEditorProps {
   content: string
   onChange: (content: string) => void
   placeholder?: string
 }
 
-interface ToolbarButtonProps {
-  label: string
-  title: string
-  active?: boolean
-  onClick: () => void
-  className?: string
-}
-
-function ToolbarBtn({ label, title, active, onClick, className = '' }: ToolbarButtonProps) {
+const MainToolbarContent = ({
+  onHighlighterClick,
+  onLinkClick,
+  isMobile,
+}: {
+  onHighlighterClick: () => void
+  onLinkClick: () => void
+  isMobile: boolean
+}) => {
   return (
-    <button
-      type="button"
-      title={title}
-      onClick={onClick}
-      className={`
-        flex-shrink-0 w-8 h-8 flex items-center justify-center rounded text-sm
-        transition-colors duration-150
-        ${active
-          ? 'bg-[#4F46E5] text-white'
-          : 'text-[#4B5563] hover:bg-[#F3F4F6] hover:text-[#111827]'
-        }
-        focus:outline-none focus:ring-1 focus:ring-[#4F46E5]
-        ${className}
-      `}
-    >
-      {label}
-    </button>
+    <>
+      <Spacer />
+
+      <ToolbarGroup>
+        <UndoRedoButton action="undo" />
+        <UndoRedoButton action="redo" />
+      </ToolbarGroup>
+
+      <ToolbarSeparator />
+
+      <ToolbarGroup>
+        <HeadingDropdownMenu modal={false} levels={[1, 2, 3, 4]} />
+        <ListDropdownMenu
+          modal={false}
+          types={["bulletList", "orderedList", "taskList"]}
+        />
+        <BlockquoteButton />
+        <CodeBlockButton />
+      </ToolbarGroup>
+
+      <ToolbarSeparator />
+
+      <ToolbarGroup>
+        <MarkButton type="bold" />
+        <MarkButton type="italic" />
+        <MarkButton type="strike" />
+        <MarkButton type="code" />
+        <MarkButton type="underline" />
+        {!isMobile ? (
+          <ColorHighlightPopover />
+        ) : (
+          <ColorHighlightPopoverButton onClick={onHighlighterClick} />
+        )}
+        {!isMobile ? <LinkPopover /> : <LinkButton onClick={onLinkClick} />}
+      </ToolbarGroup>
+
+      <ToolbarSeparator />
+
+      <ToolbarGroup>
+        <MarkButton type="superscript" />
+        <MarkButton type="subscript" />
+      </ToolbarGroup>
+
+      <ToolbarSeparator />
+
+      <ToolbarGroup>
+        <TextAlignButton align="left" />
+        <TextAlignButton align="center" />
+        <TextAlignButton align="right" />
+        <TextAlignButton align="justify" />
+      </ToolbarGroup>
+
+      <ToolbarSeparator />
+
+      <ToolbarGroup>
+        <ImageUploadButton text="Add" />
+      </ToolbarGroup>
+
+      <Spacer />
+
+      {isMobile && <ToolbarSeparator />}
+
+      <ToolbarGroup>
+        <ThemeToggle />
+      </ToolbarGroup>
+    </>
   )
 }
 
-function ToolbarSep() {
-  return <span className="w-px h-5 bg-[#E5E7EB] mx-0.5 flex-shrink-0" />
-}
+const MobileToolbarContent = ({
+  type,
+  onBack,
+}: {
+  type: 'highlighter' | 'link'
+  onBack: () => void
+}) => (
+  <>
+    <ToolbarGroup>
+      <Button variant="ghost" onClick={onBack}>
+        <ArrowLeftIcon className="tiptap-button-icon" />
+        {type === 'highlighter' ? (
+          <HighlighterIcon className="tiptap-button-icon" />
+        ) : (
+          <LinkIcon className="tiptap-button-icon" />
+        )}
+      </Button>
+    </ToolbarGroup>
 
-export default function ArticleEditor({ content, onChange, placeholder = '开始写文章...' }: ArticleEditorProps) {
+    <ToolbarSeparator />
+
+    {type === 'highlighter' ? (
+      <ColorHighlightPopoverContent />
+    ) : (
+      <LinkContent />
+    )}
+  </>
+)
+
+export default function ArticleEditor({
+  content,
+  onChange,
+  placeholder = '开始写文章...',
+}: ArticleEditorProps) {
+  const isMobile = useIsBreakpoint()
+  const { height } = useWindowSize()
+  const [mobileView, setMobileView] = useState<'main' | 'highlighter' | 'link'>('main')
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [charCount, setCharCount] = useState(0)
   const [wordCount, setWordCount] = useState(0)
-  const [toolbarSticky, setToolbarSticky] = useState(false)
-  const editorRef = useRef<HTMLDivElement>(null)
+  const toolbarRef = useRef<HTMLDivElement>(null)
 
   const editor = useEditor({
+    immediatelyRender: false,
+    editorProps: {
+      attributes: {
+        autocomplete: 'off',
+        autocorrect: 'off',
+        autocapitalize: 'off',
+        'aria-label': 'Main content area, start typing to enter text.',
+        class: 'simple-editor',
+      },
+    },
     extensions: [
       StarterKit.configure({
-        codeBlock: false,
-        heading: { levels: [1, 2, 3] },
+        horizontalRule: false,
+        link: {
+          openOnClick: false,
+          enableClickSelection: true,
+        },
       }),
-      Link.configure({ openOnClick: false, autolink: true }),
-      Image.configure({ inline: false, allowBase64: true }),
-      Placeholder.configure({ placeholder }),
-      CodeBlock,
+      HorizontalRule,
+      TextAlign.configure({ types: ['heading', 'paragraph'] }),
       TaskList,
       TaskItem.configure({ nested: true }),
+      Highlight.configure({ multicolor: true }),
+      Image,
+      Typography,
+      Superscript,
+      Subscript,
+      Selection,
+      Link.configure({ openOnClick: false, autolink: true }),
+      Placeholder.configure({ placeholder }),
+      CodeBlock,
+      ImageUploadNode.configure({
+        accept: 'image/*',
+        maxSize: MAX_FILE_SIZE,
+        limit: 3,
+        upload: handleImageUpload,
+        onError: (error) => console.error('Upload failed:', error),
+      }),
       Markdown.configure({ indentation: { style: 'space', size: 2 } }),
     ],
     onUpdate: ({ editor }) => {
@@ -80,12 +246,18 @@ export default function ArticleEditor({ content, onChange, placeholder = '开始
       setCharCount(md.length)
       setWordCount(editor.getText().split(/\s+/).filter(Boolean).length)
     },
-    editorProps: {
-      attributes: {
-        class: 'prose max-w-none focus:outline-none min-h-[200px] px-4 py-3 text-[#111827] leading-relaxed',
-      },
-    },
   })
+
+  const rect = useCursorVisibility({
+    editor,
+    overlayHeight: toolbarRef.current?.getBoundingClientRect().height ?? 0,
+  })
+
+  useEffect(() => {
+    if (!isMobile && mobileView !== 'main') {
+      setMobileView('main')
+    }
+  }, [isMobile, mobileView])
 
   useEffect(() => {
     if (!editor || !content) return
@@ -94,72 +266,9 @@ export default function ArticleEditor({ content, onChange, placeholder = '开始
     }
   }, [content, editor])
 
-  // Scroll shadow for toolbar
-  useEffect(() => {
-    const el = editorRef.current
-    if (!el) return
-    const onScroll = () => setToolbarSticky(el.scrollTop > 10)
-    el.addEventListener('scroll', onScroll)
-    return () => el.removeEventListener('scroll', onScroll)
-  }, [])
-
-  const toggleFullscreen = useCallback(() => setIsFullscreen(f => !f), [])
-
   if (!editor) return null
 
-  // 5 groups:
-  // G1: 文本格式 B I S
-  // G2: 标题 H1 H2 H3
-  // G3: 列表 • 1. ☑
-  // G4: 块引用 > | ``` | —
-  // G5: 链接 🔗 | 图片 📷
-
-  const setLink = useCallback(() => {
-    const prev = editor.getAttributes('link').href
-    const url = window.prompt('输入链接地址', prev || 'https://')
-    if (url === null) return
-    if (url === '') { editor.chain().focus().unsetLink().run(); return }
-    editor.chain().focus().setLink({ href: url }).run()
-  }, [editor])
-
-  const setImage = useCallback(() => {
-    const url = window.prompt('输入图片地址', 'https://')
-    if (!url || url === 'https://') return
-    editor.chain().focus().setImage({ src: url }).run()
-  }, [editor])
-
-  const ToolbarContent = () => (
-    <>
-      {/* G1: 文本格式 */}
-      <ToolbarBtn label="B" title="粗体 (Ctrl+B)" active={editor.isActive('bold')} onClick={() => editor.chain().focus().toggleBold().run()} className="font-bold" />
-      <ToolbarBtn label="I" title="斜体 (Ctrl+I)" active={editor.isActive('italic')} onClick={() => editor.chain().focus().toggleItalic().run()} className="italic" />
-      <ToolbarBtn label="S" title="删除线" active={editor.isActive('strike')} onClick={() => editor.chain().focus().toggleStrike().run()} className="line-through" />
-      <ToolbarBtn label="`" title="行内代码" active={editor.isActive('code')} onClick={() => editor.chain().focus().toggleCode().run()} className="font-mono text-xs" />
-      <ToolbarSep />
-
-      {/* G2: 标题 */}
-      <ToolbarBtn label="H1" title="一级标题" active={editor.isActive('heading', { level: 1 })} onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} className="font-bold text-xs w-9" />
-      <ToolbarBtn label="H2" title="二级标题" active={editor.isActive('heading', { level: 2 })} onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} className="font-bold text-xs w-9" />
-      <ToolbarBtn label="H3" title="三级标题" active={editor.isActive('heading', { level: 3 })} onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()} className="font-bold text-xs w-9" />
-      <ToolbarSep />
-
-      {/* G3: 列表 */}
-      <ToolbarBtn label="•" title="无序列表" active={editor.isActive('bulletList')} onClick={() => editor.chain().focus().toggleBulletList().run()} />
-      <ToolbarBtn label="1." title="有序列表" active={editor.isActive('orderedList')} onClick={() => editor.chain().focus().toggleOrderedList().run()} />
-      <ToolbarBtn label="☑" title="任务列表" active={editor.isActive('taskList')} onClick={() => editor.chain().focus().toggleTaskList().run()} />
-      <ToolbarSep />
-
-      {/* G4: 块 */}
-      <ToolbarBtn label="❝" title="引用" active={editor.isActive('blockquote')} onClick={() => editor.chain().focus().toggleBlockquote().run()} />
-      <ToolbarBtn label="</>" title="代码块" active={editor.isActive('codeBlock')} onClick={() => editor.chain().focus().toggleCodeBlock().run()} className="font-mono text-xs" />
-      <ToolbarBtn label="—" title="分割线" active={false} onClick={() => editor.chain().focus().setHorizontalRule().run()} />
-      <ToolbarSep />
-
-      {/* G5: 媒体 */}
-      <ToolbarBtn label="🔗" title="添加链接" active={editor.isActive('link')} onClick={setLink} />
-      <ToolbarBtn label="📷" title="添加图片" active={false} onClick={setImage} />
-    </>
-  )
+  const toggleFullscreen = () => setIsFullscreen(f => !f)
 
   const StatusBar = () => (
     <div className="flex items-center justify-between px-3 py-1.5 border-t border-[#E5E7EB] bg-[#FAFAFA] text-xs text-[#9CA3AF]">
@@ -197,15 +306,23 @@ export default function ArticleEditor({ content, onChange, placeholder = '开始
           </button>
         </div>
 
-        {/* 全屏工具栏 — 横向滚动 */}
+        {/* 全屏工具栏 */}
         <div className="flex items-center gap-0.5 px-3 py-2 border-b border-[#E5E7EB] bg-[#FAFAFA] overflow-x-auto">
-          <ToolbarContent />
+          <EditorContext.Provider value={{ editor }}>
+            <MainToolbarContent
+              onHighlighterClick={() => {}}
+              onLinkClick={() => {}}
+              isMobile={false}
+            />
+          </EditorContext.Provider>
         </div>
 
         {/* 全屏编辑器区域 */}
         <div className="flex-1 overflow-y-auto">
           <div className="max-w-4xl mx-auto px-4 py-6">
-            <EditorContent editor={editor} className="min-h-[60vh]" />
+            <EditorContext.Provider value={{ editor }}>
+              <EditorContent editor={editor} className="simple-editor-content" />
+            </EditorContext.Provider>
           </div>
         </div>
 
@@ -228,26 +345,38 @@ export default function ArticleEditor({ content, onChange, placeholder = '开始
 
   // 普通模式
   return (
-    <div
-      ref={editorRef}
-      className="border border-[#E5E7EB] rounded-lg bg-white flex flex-col overflow-hidden"
-      style={{ height: 520 }}
-    >
-      {/* 工具栏 — 横向滚动 */}
-      <div className={`
-        flex items-center gap-0.5 px-2 py-2 border-b border-[#E5E7EB] bg-white
-        overflow-x-auto scrollbar-none
-        ${toolbarSticky ? 'shadow-sm' : ''}
-      `}>
-        <ToolbarContent />
-      </div>
+    <div className="simple-editor-wrapper">
+      <EditorContext.Provider value={{ editor }}>
+        <Toolbar
+          ref={toolbarRef}
+          style={{
+            ...(isMobile
+              ? {
+                  bottom: `calc(100% - ${height - rect.y}px)`,
+                }
+              : {}),
+          }}
+        >
+          {mobileView === 'main' ? (
+            <MainToolbarContent
+              onHighlighterClick={() => setMobileView('highlighter')}
+              onLinkClick={() => setMobileView('link')}
+              isMobile={isMobile}
+            />
+          ) : (
+            <MobileToolbarContent
+              type={mobileView === 'highlighter' ? 'highlighter' : 'link'}
+              onBack={() => setMobileView('main')}
+            />
+          )}
+        </Toolbar>
 
-      {/* 编辑区 */}
-      <div className="flex-1 overflow-y-auto">
-        <EditorContent editor={editor} />
-      </div>
-
-      {/* 状态栏 */}
+        <EditorContent
+          editor={editor}
+          role="presentation"
+          className="simple-editor-content"
+        />
+      </EditorContext.Provider>
       <StatusBar />
     </div>
   )

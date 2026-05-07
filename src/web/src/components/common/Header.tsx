@@ -9,7 +9,7 @@ export default function Header() {
       <div className="max-w-6xl mx-auto w-full px-4 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
           <span className="text-xl font-bold text-[#4F46E5]">⚡ QualiForge</span>
-          <span className="text-sm text-[#4B5563] hidden sm:inline">AI Coding 质量保障</span>
+          <span className="text-sm text-[#4B5563] hidden sm:inline">AI Coding 每行代码变得可信</span>
         </Link>
         <nav className="flex items-center gap-3 text-sm">
           {isAuthenticated ? (

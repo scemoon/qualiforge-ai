@@ -2,15 +2,21 @@ import { useState } from 'react'
 import { Outlet, Link, useLocation } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
 
-const navItems = [
+type NavItem = {
+  path: string
+  label: string
+  icon: string
+  exact?: boolean
+  external?: boolean
+}
+
+const navItems: NavItem[] = [
   { path: '/admin', label: '首页', icon: '🏠', exact: true },
   { path: '/admin/articles', label: '文章管理', icon: '📝' },
-  { path: '/admin/articles/review', label: '审核文章', icon: '✅' },
   { path: '/admin/evaluations', label: '评测管理', icon: '🎯' },
   { path: '/admin/sections', label: '板块管理', icon: '📋' },
   { path: '/admin/tags', label: '标签管理', icon: '🏷️' },
   { path: '/admin/wx-config', label: '公众号配置', icon: '📌' },
-  { path: '/my/article/new', label: '发布文章', icon: '✏️', external: true },
 ]
 
 export default function AdminLayout() {

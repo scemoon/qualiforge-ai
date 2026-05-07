@@ -76,7 +76,7 @@ export default function Home() {
                 QualiForge <span className="text-indigo-400">AI</span>
               </h1>
               <p className="text-white/60 text-sm sm:text-base max-w-xl hidden sm:block">
-                系统化评估、验证、提升 AI Coding 质量 — 让每一行 AI 生成代码都可信
+               让每一行 AI 生成代码都可信
               </p>
             </div>
             {isAuthenticated ? (
@@ -91,7 +91,7 @@ export default function Home() {
               </div>
             ) : (
               <Link to="/login" className="flex-shrink-0 px-4 sm:px-5 py-2 sm:py-2.5 bg-white text-[#4F46E5] rounded-lg font-semibold text-sm hover:bg-indigo-50 transition w-full sm:w-auto text-center">
-                登录 / 注册
+                登录
               </Link>
             )}
           </div>

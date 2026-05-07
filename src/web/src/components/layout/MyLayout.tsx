@@ -4,6 +4,7 @@ import { useAuthStore } from '../../store/authStore'
 
 const navItems = [
   { path: '/my', label: '我的主页', icon: '🏠' },
+  { path: '/my/articles', label: '我的文章', icon: '📝' },
   { path: '/my/article/new', label: '发布文章', icon: '✏️' },
   { path: '/my/collection', label: '我的收藏', icon: '❤️' },
   { path: '/my/notifications', label: '通知中心', icon: '🔔' },

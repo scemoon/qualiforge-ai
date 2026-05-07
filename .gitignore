@@ -2,7 +2,7 @@
 node_modules/
 
 # Vite build cache
-src/**/node_modules/.vite/
+src/**/node_modules
 
 # Build output
 dist/
