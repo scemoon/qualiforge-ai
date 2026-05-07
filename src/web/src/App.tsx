@@ -23,6 +23,7 @@ import ArticleNew from './pages/Article/ArticleNew'
 import MyCollection from './pages/My/MyCollection'
 import MyNotifications from './pages/My/MyNotifications'
 import ArticleEdit from './pages/Article/ArticleEdit'
+import NotFound from './pages/NotFound'
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useAuthStore()
@@ -75,7 +76,7 @@ export default function App() {
         <Route path="wx-config" element={<AdminWxConfig />} />
       </Route>
 
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   )
 }
