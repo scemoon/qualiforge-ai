@@ -59,6 +59,7 @@ export default function App() {
       <Route path="/my" element={<RequireAuth><MyLayout /></RequireAuth>}>
         <Route index element={<MyDashboard />} />
         <Route path="articles" element={<MyArticleList />} />
+        <Route path="articles/new" element={<ArticleNew />} />
         <Route path="collection" element={<MyCollection />} />
         <Route path="notifications" element={<MyNotifications />} />
       </Route>
@@ -68,6 +69,7 @@ export default function App() {
         <Route index element={<AdminDashboard />} />
         <Route path="articles" element={<AdminArticleList />} />
         <Route path="evaluations" element={<AdminEvaluation />} />
+        <Route path="articles/new" element={<ArticleNew />} />
         <Route path="sections" element={<AdminSection />} />
         <Route path="tags" element={<AdminTag />} />
         <Route path="wx-config" element={<AdminWxConfig />} />

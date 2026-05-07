@@ -114,6 +114,11 @@ export default function AdminArticleList() {
 
   return (
     <ResponsiveContainer className="py-6 md:py-8">
+      <div className="mb-4">
+        <Link to="/admin/articles/new" className="inline-block px-4 py-2 bg-[#4F46E5] text-white rounded-md text-sm hover:bg-[#4338CA] transition">
+          新建文章
+        </Link>
+      </div>
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4 md:mb-6">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold text-[#111827]">文章管理</h1>
