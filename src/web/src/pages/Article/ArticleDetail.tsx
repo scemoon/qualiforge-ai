@@ -82,7 +82,7 @@ export default function ArticleDetail() {
             navigator.clipboard.writeText(window.location.href)
           }
         } : undefined}
-        onEdit={canEdit ? () => { window.location.href = `/articles/${article._id}/edit` } : undefined}
+        onEdit={canEdit ? () => { window.location.href = `/article/${article._id}/edit` } : undefined}
       />
 
       <main className="flex-1">
