@@ -22,8 +22,10 @@ jobs:
           npm run build
       - name: Install CloudBase CLI
         run: npm install -g @cloudbase/cli
-      - name: Deploy to CloudBase CDN
-        run: tcb hosting deploy dist/web / --env-id ${{ secrets.CLOUDBASE_ENV_ID }}
+      - name: Deploy Web App
+        run: |
+          cd src/web
+          tcb app deploy --env-id ${{ secrets.CLOUDBASE_ENV_ID }}
       - name: Deploy Cloud Functions
         run: |
           cd cloud
