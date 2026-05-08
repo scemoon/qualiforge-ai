@@ -1,9 +1,6 @@
 # Dependencies
 node_modules/
-cloud/*/node_modules/
 
-# Vite build cache
-src/**/node_modules
 
 # Build output
 dist/
@@ -25,10 +22,18 @@ npm-debug.log*
 *.swo
 .DS_Store
 
-# CloudBase / Tencent Cloud
-.cloudbase/
+cloud/*/node_modules/
+
 .fun/
 # Playwright
-src/web/test-results/
-src/web/playwright.config.ts
-src/web/e2e/
+src/*/test-results/
+src/*/playwright.config.ts
+src/*/e2e/
+src/*/dist
+src/*/pnpm-lock.yaml
+src/*/yarn.lock
+# Vite build cache
+src/**/node_modules
+
+
+

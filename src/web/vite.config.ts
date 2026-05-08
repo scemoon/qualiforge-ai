@@ -5,7 +5,7 @@ export default defineConfig({
   plugins: [react()],
   base: '/',
   build: {
-    outDir: '../../dist/web',
+    outDir: 'dist/web',
     emptyOutDir: true,
     rollupOptions: {
       output: {
