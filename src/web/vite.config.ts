@@ -5,7 +5,7 @@ export default defineConfig({
   plugins: [react()],
   base: '/forgeai/',
   build: {
-    outDir: 'dist/web',
+    outDir: 'dist',
     emptyOutDir: true,
     rollupOptions: {
       output: {
