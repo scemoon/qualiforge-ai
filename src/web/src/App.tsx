@@ -40,7 +40,7 @@ export default function App() {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/article">
-        <Route index path="/search" element={<Search />} />
+        <Route path="search" element={<Search />} />
         <Route path=':id' element={<ArticleDetail />}></Route>
         <Route path="new" element={<RequireAuth><ArticleNew /></RequireAuth>} />
         <Route path=":id/edit" element={<RequireAuth><ArticleEdit /></RequireAuth>} />
