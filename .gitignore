@@ -1,5 +1,6 @@
 # Dependencies
 node_modules/
+cloud/*/node_modules/
 
 # Vite build cache
 src/**/node_modules
