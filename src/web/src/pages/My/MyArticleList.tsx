@@ -91,7 +91,7 @@ export default function MyArticleList() {
       ) : articles.length === 0 ? (
         <div className="text-center py-16 text-[#9CA3AF]">
           <p>还没有文章。</p>
-          <Link to="/my/article/new" className="mt-3 inline-block text-sm text-[#4F46E5] hover:underline">发布第一篇文章 →</Link>
+          <Link to="articles/new" className="mt-3 inline-block text-sm text-[#4F46E5] hover:underline">发布第一篇文章 →</Link>
         </div>
       ) : (
         <div className="space-y-4">

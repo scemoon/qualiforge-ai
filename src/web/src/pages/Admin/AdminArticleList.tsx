@@ -6,6 +6,26 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import ResponsiveContainer from '../../components/common/ResponsiveContainer'
 
+interface Article {
+  _id: string
+  title: string
+  status: string
+  createdAt: string
+  updatedAt?: string
+  rejectReason?: string
+  content?: string
+  author?: string
+}
+
+interface DetailModalProps {
+  article: Article | null
+  isOpen: boolean
+  onClose: () => void
+  onApprove: (id: string) => void
+  onReject: (id: string, reason: string) => void
+  isProcessing: boolean
+}
+
 async function fetchArticles({ page = 1, status }: { page?: number; status?: string }) {
   const res = await fetch('https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/article-crud', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -48,9 +68,100 @@ async function deleteArticle(articleId: string) {
 
 const statusTag = (s: string) => {
   const map: Record<string, string> = {
-    approved: 'bg-[#10B981] text-white', pending: 'bg-[#F59E0B] text-white', rejected: 'bg-[#EF4444] text-white',
+    approved: 'bg-[#10B981] text-white', 
+    pending: 'bg-[#F59E0B] text-white', 
+    rejected: 'bg-[#EF4444] text-white',
   }
   return <span className={`px-2 py-0.5 rounded-full text-xs ${map[s] || 'bg-gray-200'}`}>{s}</span>
+}
+
+function DetailModal({ article, isOpen, onClose, onApprove, onReject, isProcessing }: DetailModalProps) {
+  const [rejectReason, setRejectReason] = useState('')
+
+  if (!isOpen || !article) return null
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="sticky top-0 bg-white border-b border-[#E5E7EB] px-6 py-4 flex items-center justify-between">
+          <h2 className="text-lg font-bold text-[#111827]">{article.title}</h2>
+          <button
+            onClick={onClose}
+            className="text-[#9CA3AF] hover:text-[#6B7280] text-xl"
+          >
+            ✕
+          </button>
+        </div>
+
+        <div className="px-6 py-4 space-y-4">
+          <div className="flex items-center gap-4">
+            <div className="flex-1">
+              <p className="text-xs text-[#9CA3AF]">创建于：{dayjs(article.createdAt).format('YYYY-MM-DD HH:mm')}</p>
+              {article.updatedAt && (
+                <p className="text-xs text-[#9CA3AF]">更新于：{dayjs(article.updatedAt).format('YYYY-MM-DD HH:mm')}</p>
+              )}
+            </div>
+            {statusTag(article.status)}
+          </div>
+
+          {article.rejectReason && (
+            <div className="p-3 rounded-md bg-[#FEF3C7] border border-[#FDE68A] text-sm text-[#92400E]">
+              驳回原因：{article.rejectReason}
+            </div>
+          )}
+
+          <div className="prose max-w-none text-sm text-[#4B5563] max-h-64 overflow-y-auto border-t border-[#E5E7EB] pt-4">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {(article.content || '').slice(0, 1000)}
+            </ReactMarkdown>
+          </div>
+        </div>
+
+        <div className="border-t border-[#E5E7EB] px-6 py-4 bg-[#F9FAFB]">
+          <div className="flex flex-col gap-3">
+            {article.status === 'pending' && (
+              <>
+                <div className="flex gap-2 items-end">
+                  <input
+                    type="text"
+                    placeholder="驳回原因（可选）"
+                    value={rejectReason}
+                    onChange={e => setRejectReason(e.target.value)}
+                    className="flex-1 border border-[#E5E7EB] rounded-md px-3 py-2 text-sm"
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => onApprove(article._id)}
+                    disabled={isProcessing}
+                    className="flex-1 px-4 py-2 bg-[#10B981] text-white rounded-md text-sm hover:bg-[#059669] transition disabled:opacity-50"
+                  >
+                    {isProcessing ? '处理中...' : '✅ 发布'}
+                  </button>
+                  <button
+                    onClick={() => {
+                      onReject(article._id, rejectReason)
+                      setRejectReason('')
+                    }}
+                    disabled={isProcessing}
+                    className="flex-1 px-4 py-2 bg-[#EF4444] text-white rounded-md text-sm hover:bg-[#DC2626] transition disabled:opacity-50"
+                  >
+                    {isProcessing ? '处理中...' : '驳回'}
+                  </button>
+                </div>
+              </>
+            )}
+            <button
+              onClick={onClose}
+              className="w-full px-4 py-2 border border-[#E5E7EB] rounded-md text-sm text-[#6B7280] hover:bg-[#F9FAFB]"
+            >
+              关闭
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 export default function AdminArticleList() {
@@ -59,17 +170,17 @@ export default function AdminArticleList() {
   const [page, setPage] = useState(1)
   const [statusFilter, setStatusFilter] = useState('')
   const [selectedId, setSelectedId] = useState<string>(location.state?.articleId || '')
-  const [rejectReason, setRejectReason] = useState('')
+  const [detailOpen, setDetailOpen] = useState(false)
 
   const { data, isLoading } = useQuery({
     queryKey: ['admin-articles', page, statusFilter],
     queryFn: () => fetchArticles({ page, status: statusFilter || undefined }),
   })
 
-  const { data: articleData, isLoading: loadingArticle } = useQuery({
+  const { data: articleData } = useQuery({
     queryKey: ['article-review', selectedId],
     queryFn: () => fetchArticle(selectedId),
-    enabled: !!selectedId,
+    enabled: !!selectedId && detailOpen,
   })
 
   const approveMut = useMutation({
@@ -77,8 +188,8 @@ export default function AdminArticleList() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-articles'] })
       queryClient.invalidateQueries({ queryKey: ['article-review', selectedId] })
+      setDetailOpen(false)
       setSelectedId('')
-      setRejectReason('')
     },
   })
 
@@ -87,8 +198,8 @@ export default function AdminArticleList() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-articles'] })
       queryClient.invalidateQueries({ queryKey: ['article-review', selectedId] })
+      setDetailOpen(false)
       setSelectedId('')
-      setRejectReason('')
     },
   })
 
@@ -96,9 +207,7 @@ export default function AdminArticleList() {
     mutationFn: deleteArticle,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-articles'] })
-      queryClient.invalidateQueries({ queryKey: ['article-review', selectedId] })
       setSelectedId('')
-      setRejectReason('')
     },
   })
 
@@ -108,202 +217,159 @@ export default function AdminArticleList() {
     }
   }
 
+  const handleQuickApprove = (articleId: string) => {
+    approveMut.mutate(articleId)
+  }
+
+  const handleOpenDetail = (articleId: string) => {
+    setSelectedId(articleId)
+    setDetailOpen(true)
+  }
+
+  const handleCloseDetail = () => {
+    setDetailOpen(false)
+    setTimeout(() => setSelectedId(''), 300)
+  }
+
   const articles = data?.data?.list || []
   const total = data?.data?.total || 0
   const selectedArticle = articleData?.data
 
   return (
     <ResponsiveContainer className="py-6 md:py-8">
-      <div className="mb-4">
-        <Link to="/admin/articles/new" className="inline-block px-4 py-2 bg-[#4F46E5] text-white rounded-md text-sm hover:bg-[#4338CA] transition">
-          新建文章
-        </Link>
-      </div>
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4 md:mb-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold text-[#111827]">文章管理</h1>
-          <p className="text-sm text-[#6B7280] mt-1">列表筛选、审核与删除操作统一在此页面完成。</p>
+          <p className="text-sm text-[#6B7280] mt-1">文章列表、审核和删除操作</p>
         </div>
-        <select
-          className="border border-[#E5E7EB] rounded-md px-3 py-1.5 text-sm w-full sm:w-auto"
-          value={statusFilter}
-          onChange={e => {
-            setStatusFilter(e.target.value)
-            setPage(1)
-          }}
-        >
-          <option value="">全部状态</option>
-          <option value="pending">待审核</option>
-          <option value="approved">已发布</option>
-          <option value="rejected">已驳回</option>
-        </select>
+        <div className="flex gap-2 w-full sm:w-auto flex-wrap">
+          <select
+            className="flex-1 sm:flex-initial border border-[#E5E7EB] rounded-md px-3 py-2 text-sm"
+            value={statusFilter}
+            onChange={e => {
+              setStatusFilter(e.target.value)
+              setPage(1)
+            }}
+          >
+            <option value="">全部状态</option>
+            <option value="pending">待审核</option>
+            <option value="approved">已发布</option>
+            <option value="rejected">已驳回</option>
+          </select>
+          <Link 
+            to="/articles/new" 
+            className="flex-1 sm:flex-initial px-4 py-2 bg-[#4F46E5] text-white rounded-md text-sm hover:bg-[#4338CA] transition text-center"
+          >
+            新建文章
+          </Link>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
-        <div className="bg-white rounded-lg border border-[#E5E7EB] overflow-hidden lg:order-1 order-2">
-          <div className="px-4 py-3 bg-[#F9FAFB] border-b border-[#E5E7EB]">
-            <span className="text-sm font-medium text-[#4B5563]">文章列表 ({articles.length})</span>
-          </div>
-
-          {isLoading ? (
-            <div className="p-6 text-center text-[#9CA3AF] text-sm">加载中...</div>
-          ) : articles.length === 0 ? (
-            <div className="p-6 text-center text-[#9CA3AF] text-sm">暂无文章</div>
-          ) : (
-            <div className="divide-y divide-[#F3F4F6] max-h-[600px] overflow-y-auto">
-              {articles.map((article: any) => (
-                <div
-                  key={article._id}
-                  className={`px-4 py-3 transition ${selectedId === article._id ? 'bg-[#EEF2FF]' : 'hover:bg-[#F9FAFB]'}`}
-                  onClick={() => setSelectedId(article._id)}
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0">
-                      <p className="text-sm font-medium text-[#111827] line-clamp-2">{article.title}</p>
-                      <p className="text-xs text-[#9CA3AF] mt-1">{dayjs(article.createdAt).format('YYYY-MM-DD HH:mm')}</p>
-                    </div>
-                    {statusTag(article.status)}
-                  </div>
-                  <div className="mt-3 flex flex-wrap gap-2 text-xs">
-                    <Link
-                      to={`/article/${article._id}`}
-                      className="text-[#4F46E5] hover:underline"
-                      onClick={e => e.stopPropagation()}
-                    >
-                      查看
-                    </Link>
-                    {article.status === 'pending' && (
-                      <>
+      <div className="bg-white rounded-lg border border-[#E5E7EB] overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="bg-[#F9FAFB] border-b border-[#E5E7EB]">
+                <th className="px-4 md:px-6 py-3 text-left text-sm font-medium text-[#4B5563]">标题</th>
+                <th className="px-4 md:px-6 py-3 text-left text-sm font-medium text-[#4B5563] hidden sm:table-cell">状态</th>
+                <th className="px-4 md:px-6 py-3 text-left text-sm font-medium text-[#4B5563] hidden md:table-cell">创建时间</th>
+                <th className="px-4 md:px-6 py-3 text-right text-sm font-medium text-[#4B5563]">操作</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[#E5E7EB]">
+              {isLoading ? (
+                <tr>
+                  <td colSpan={4} className="px-4 md:px-6 py-8 text-center text-[#9CA3AF] text-sm">
+                    加载中...
+                  </td>
+                </tr>
+              ) : articles.length === 0 ? (
+                <tr>
+                  <td colSpan={4} className="px-4 md:px-6 py-8 text-center text-[#9CA3AF] text-sm">
+                    暂无文章
+                  </td>
+                </tr>
+              ) : (
+                articles.map((article: Article) => (
+                  <tr key={article._id} className="hover:bg-[#F9FAFB] transition">
+                    <td className="px-4 md:px-6 py-4">
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium text-[#111827] line-clamp-2">{article.title}</p>
+                        <div className="sm:hidden mt-1 flex items-center gap-2">
+                          {statusTag(article.status)}
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-4 md:px-6 py-4 hidden sm:table-cell">
+                      {statusTag(article.status)}
+                    </td>
+                    <td className="px-4 md:px-6 py-4 hidden md:table-cell text-sm text-[#7F8590]">
+                      {dayjs(article.createdAt).format('YYYY-MM-DD HH:mm')}
+                    </td>
+                    <td className="px-4 md:px-6 py-4 text-right">
+                      <div className="flex items-center justify-end gap-2 flex-wrap">
                         <button
-                          type="button"
-                          className="text-[#10B981] hover:underline"
-                          onClick={e => {
-                            e.stopPropagation()
-                            approveMut.mutate(article._id)
-                          }}
+                          onClick={() => handleOpenDetail(article._id)}
+                          className="text-[#4F46E5] hover:underline text-xs md:text-sm whitespace-nowrap"
                         >
-                          发布
+                          详情
                         </button>
+                        {article.status === 'pending' && (
+                          <button
+                            onClick={() => handleQuickApprove(article._id)}
+                            disabled={approveMut.isPending}
+                            className="text-[#10B981] hover:underline text-xs md:text-sm whitespace-nowrap disabled:opacity-50"
+                          >
+                            发布
+                          </button>
+                        )}
                         <button
-                          type="button"
-                          className="text-[#F59E0B] hover:underline"
-                          onClick={e => {
-                            e.stopPropagation()
-                            setSelectedId(article._id)
-                          }}
+                          onClick={() => handleDelete(article._id)}
+                          disabled={deleteMut.isPending}
+                          className="text-[#EF4444] hover:underline text-xs md:text-sm whitespace-nowrap disabled:opacity-50"
                         >
-                          审核
+                          删除
                         </button>
-                      </>
-                    )}
-                    <button
-                      type="button"
-                      className="text-[#EF4444] hover:underline"
-                      onClick={e => {
-                        e.stopPropagation()
-                        handleDelete(article._id)
-                      }}
-                    >
-                      删除
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {total > 20 && (
-            <div className="mt-4 md:mt-6 flex flex-wrap justify-center gap-2 px-4 py-3">
-              <button
-                className="px-4 py-2 border border-[#E5E7EB] rounded-md text-sm"
-                onClick={() => setPage(p => Math.max(1, p - 1))}
-                disabled={page === 1}
-              >
-                上一页
-              </button>
-              <span className="px-4 py-2 text-sm text-[#4B5563]">{page} / {Math.ceil(total / 20)}</span>
-              <button
-                className="px-4 py-2 border border-[#E5E7EB] rounded-md text-sm"
-                onClick={() => setPage(p => p + 1)}
-                disabled={page >= Math.ceil(total / 20)}
-              >
-                下一页
-              </button>
-            </div>
-          )}
-        </div>
-
-        <div className="lg:col-span-2 bg-white rounded-lg border border-[#E5E7EB] p-4 md:p-6 lg:order-2 order-1">
-          {!selectedId ? (
-            <div className="text-center py-12 md:py-16 text-[#9CA3AF]">← 请选择左侧文章进行审核或删除</div>
-          ) : loadingArticle ? (
-            <div className="text-center py-12 md:py-16 text-[#9CA3AF]">加载中...</div>
-          ) : !selectedArticle ? (
-            <div className="text-center py-12 md:py-16 text-[#9CA3AF]">文章未找到或已被删除</div>
-          ) : (
-            <div>
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-4">
-                <div>
-                  <h2 className="text-lg md:text-xl font-bold text-[#111827]">{selectedArticle.title}</h2>
-                  <p className="text-xs md:text-sm text-[#9CA3AF] mt-1">
-                    {dayjs(selectedArticle.createdAt).format('YYYY-MM-DD HH:mm')}
-                  </p>
-                </div>
-                {statusTag(selectedArticle.status)}
-              </div>
-
-              <div className="prose max-w-none text-sm text-[#4B5563] mb-4 md:mb-6 max-h-48 md:max-h-64 overflow-y-auto">
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {(selectedArticle.content || '').slice(0, 500)}
-                </ReactMarkdown>
-              </div>
-
-              {selectedArticle.status === 'rejected' && selectedArticle.rejectReason && (
-                <div className="mb-4 p-4 rounded-md bg-[#FEF3C7] border border-[#FDE68A] text-sm text-[#92400E]">
-                  驳回原因：{selectedArticle.rejectReason}
-                </div>
+                      </div>
+                    </td>
+                  </tr>
+                ))
               )}
-
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 md:gap-3 pt-4 border-t border-[#E5E7EB]">
-                <div className="flex-1 flex flex-col sm:flex-row gap-2">
-                  {selectedArticle.status === 'pending' && (
-                    <>
-                      <button
-                        onClick={() => approveMut.mutate(selectedId)}
-                        disabled={approveMut.isPending}
-                        className="px-5 py-2 bg-[#10B981] text-white rounded-md text-sm hover:bg-[#059669] transition disabled:opacity-50"
-                      >
-                        {approveMut.isPending ? '处理中...' : '✅ 通过'}
-                      </button>
-                      <input
-                        type="text"
-                        placeholder="驳回原因（可选）"
-                        value={rejectReason}
-                        onChange={e => setRejectReason(e.target.value)}
-                        className="flex-1 border border-[#E5E7EB] rounded-md px-3 py-1.5 text-sm"
-                      />
-                      <button
-                        onClick={() => rejectMut.mutate({ id: selectedId, reason: rejectReason })}
-                        disabled={rejectMut.isPending}
-                        className="px-4 py-1.5 bg-[#EF4444] text-white rounded-md text-sm hover:bg-[#DC2626] transition disabled:opacity-50 whitespace-nowrap"
-                      >
-                        驳回
-                      </button>
-                    </>
-                  )}
-                </div>
-                <button
-                  onClick={() => handleDelete(selectedId)}
-                  disabled={deleteMut.isPending}
-                  className="px-5 py-2 bg-[#EF4444] text-white rounded-md text-sm hover:bg-[#DC2626] transition disabled:opacity-50"
-                >
-                  {deleteMut.isPending ? '处理中...' : '删除文章'}
-                </button>
-              </div>
-            </div>
-          )}
+            </tbody>
+          </table>
         </div>
+
+        {total > 20 && (
+          <div className="flex flex-wrap justify-center gap-2 px-4 py-4 bg-[#F9FAFB] border-t border-[#E5E7EB]">
+            <button
+              className="px-3 py-1.5 border border-[#E5E7EB] rounded-md text-sm text-[#6B7280] hover:bg-white disabled:opacity-50"
+              onClick={() => setPage(p => Math.max(1, p - 1))}
+              disabled={page === 1}
+            >
+              上一页
+            </button>
+            <span className="px-3 py-1.5 text-sm text-[#4B5563]">
+              {page} / {Math.ceil(total / 20)}
+            </span>
+            <button
+              className="px-3 py-1.5 border border-[#E5E7EB] rounded-md text-sm text-[#6B7280] hover:bg-white disabled:opacity-50"
+              onClick={() => setPage(p => p + 1)}
+              disabled={page >= Math.ceil(total / 20)}
+            >
+              下一页
+            </button>
+          </div>
+        )}
       </div>
+
+      <DetailModal
+        article={selectedArticle}
+        isOpen={detailOpen}
+        onClose={handleCloseDetail}
+        onApprove={() => approveMut.mutate(selectedId)}
+        onReject={(id, reason) => rejectMut.mutate({ id, reason })}
+        isProcessing={approveMut.isPending || rejectMut.isPending}
+      />
     </ResponsiveContainer>
   )
 }
