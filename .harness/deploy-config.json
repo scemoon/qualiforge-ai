@@ -1,7 +1,7 @@
 {
-  "version": "0.1.0",
-  "lastDeployed": null,
-  "envId": "",
+  "version": "1.0.0",
+  "lastDeployed": "2026-05-08T08:20:00+08:00",
+  "envId": "cloud1-2gavd8kj8a1ce021",
   "platform": "web",
   "frontend": {
     "web": {
@@ -12,15 +12,28 @@
       "deployedAt": null,
       "staticHosting": {
         "enabled": true,
-        "envId": "",
-        "domain": null,
+        "envId": "cloud1-2gavd8kj8a1ce021",
+        "domain": "cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/forgeai/",
         "customDomain": null,
-        "cdn": true
+        "cdn": true,
+        "appPath": "/forgeai/"
       }
     }
   },
   "backend": {
-    "cloudFunctions": [],
+    "envId": "cloud1-2gavd8kj8a1ce021",
+    "cloudFunctions": [
+      {"name": "auth", "status": "deployed", "runtime": "Nodejs20.19", "memorySize": 256, "timeout": 10},
+      {"name": "article-crud", "status": "deployed", "runtime": "Nodejs20.19", "memorySize": 512, "timeout": 10},
+      {"name": "skill-crud", "status": "deployed", "runtime": "Nodejs20.19", "memorySize": 256, "timeout": 10},
+      {"name": "evaluation-crud", "status": "deployed", "runtime": "Nodejs20.19", "memorySize": 256, "timeout": 10},
+      {"name": "section-crud", "status": "deployed", "runtime": "Nodejs20.19", "memorySize": 256, "timeout": 10},
+      {"name": "notification-crud", "status": "deployed", "runtime": "Nodejs20.19", "memorySize": 256, "timeout": 10},
+      {"name": "user-crud", "status": "deployed", "runtime": "Nodejs20.19", "memorySize": 256, "timeout": 10},
+      {"name": "search", "status": "deployed", "runtime": "Nodejs20.19", "memorySize": 256, "timeout": 10},
+      {"name": "file-upload", "status": "deployed", "runtime": "Nodejs20.19", "memorySize": 512, "timeout": 30},
+      {"name": "wechat-sync", "status": "deployed", "runtime": "Nodejs20.19", "memorySize": 256, "timeout": 30}
+    ],
     "cloudRun": [],
     "database": {
       "noSql": {
