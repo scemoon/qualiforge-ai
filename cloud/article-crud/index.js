@@ -58,7 +58,7 @@ exports.main = async (event, context) => {
       const countResult = await db.collection('articles').where(query).count()
       listResult = await db.collection('articles')
         .where(query)
-        .orderBy('data.publishedAt', 'desc')
+        .orderBy('data.createdAt', 'desc')
         .skip(skip)
         .limit(pageSize)
         .get()
@@ -142,17 +142,20 @@ exports.main = async (event, context) => {
 
       await db.collection('articles').add({
         _id: articleId,
-        title: title.trim(),
-        content: content,
-        coverImage: coverImage || '',
-        type: type,
-        status: 'pending',
-        authorId: OPENID,
-        readCount: 0,
-        wechatSynced: false,
-        createdAt: now,
-        updatedAt: now,
-        publishedAt: null
+        data: {
+          _id: articleId,
+          title: title.trim(),
+          content: content,
+          coverImage: coverImage || '',
+          type: type,
+          status: 'pending',
+          authorId: OPENID,
+          readCount: 0,
+          wechatSynced: false,
+          createdAt: now,
+          updatedAt: now,
+          publishedAt: null
+        }
       })
 
       // Link tags

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useSearchParams, useNavigate, Link } from 'react-router-dom'
+import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import ArticleEditor from '@/components/common/ArticleEditor'
 
@@ -28,8 +28,7 @@ async function updateArticle(data: any) {
 }
 
 export default function ArticleEdit() {
-  const [searchParams] = useSearchParams()
-  const id = searchParams.get('id') || ''
+  const { id } = useParams()
   const navigate = useNavigate()
 
   const [title, setTitle] = useState('')

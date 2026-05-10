@@ -80,6 +80,7 @@
 - [x] 实现文章阅读量 +1（防抖）— **注意：防抖逻辑已实现但未完整测试**
 - [x] 实现 Markdown 内容存储
 - [x] article-crud create 已修复 data 包装问题（2026-05-10）
+- [x] Vite base 配置已修正为 `/forgeai/`（与 CloudBase 静态托管子路径一致）
 - [ ] _需求: FR-C01, FR-C02_
 
 #### T1-06: 前台文章列表/详情页
