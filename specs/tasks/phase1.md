@@ -23,17 +23,12 @@
 - [ ] 路由已在 App.tsx 中注册（`/admin/official` → `ArticleNew`）
 - [ ] _需求: FR-O01_
 
-### P0 新增 — 评测榜单前台
-
-#### T1-24: 评测榜单页面
-- [ ] 开发 `/leaderboard` 页面（评测列表前台）
-- [ ] 按 Skill 分组，显示模型得分、四个维度评分
-- [ ] 支持排序（overallScore, correctness, security, maintainability, robustness）
-- [ ] `Leaderboard` 组件不存在于 `src/web/src/pages/`
-- [ ] _需求: FR-E04, FR-E05_
-
-> **说明**：用户管理（`/admin/users`）已从产品规划中移除。
-> 官方出品文章创建入口为 `/admin/official`，复用餐布局。
+> **说明**：
+> - 用户管理（`/admin/users`）已从产品规划中移除
+> - Admin 移除 `/admin/articles/new`（专家使用 `/my/articles/new`）
+> - 评测榜单前台 `/leaderboard` 暂不在 Phase 1 范围
+> - 公开前台文章编辑：`/article/:id/edit`（需登录）
+> - 官方出品文章创建入口为 `/admin/official`，type='official'
 
 #### T1-01: CloudBase 环境初始化
 - [x] 创建 CloudBase 环境，获取 envId
