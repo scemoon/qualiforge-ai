@@ -71,6 +71,7 @@ export default function App() {
         <Route path="articles" element={<AdminArticleList />} />
         <Route path="evaluations" element={<AdminEvaluation />} />
         <Route path="articles/new" element={<ArticleNew />} />
+        <Route path="official" element={<ArticleNew />} />
         <Route path="sections" element={<AdminSection />} />
         <Route path="tags" element={<AdminTag />} />
         <Route path="wx-config" element={<AdminWxConfig />} />

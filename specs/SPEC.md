@@ -81,7 +81,7 @@
 
 **公开前台**：10 个页面（/、/article/search、/article/:id、/tags、/expert/:id、/login、/register）
 **专家中心**：5 个页面（/my/*），另有文章编辑页 `/my/articles/:id/edit` 待实现
-**管理后台**：11 个页面（/admin/*），`/admin/users`、`/admin/official`、`/admin/articles/review` 待注册路由
+**管理后台**：8 个页面（/admin/*），`/admin/official` 已注册（新建官方文章），评测榜单前台 `/leaderboard` 缺失
 
 详细路由设计见 `design/frontend/web/routing.md`
 
@@ -120,10 +120,10 @@
 - 14 个云函数已部署，article-crud 已修复 data 包装问题
 - 前台已部署到 `/forgeai/` 子路径（Path Passthrough 启用）
 - TipTap 富文本编辑器已集成（Phase 1.1 完成）
-- 缺失：Expert ArticleEdit 页面、Admin 用户管理、评测榜单前台 `/leaderboard`
+- 缺失：Admin 官方出品页面 `/admin/official`（路由已注册，组件复用 ArticleNew）、评测榜单前台 `/leaderboard`
 
 **Phase 2 — 待启动**
-前置依赖：Phase 1 收尾（ArticleEdit + AdminUser）
+前置依赖：Phase 1 收尾（官方出品页面 + 评测榜单前台）
 
 ---
 

@@ -18,20 +18,9 @@
 
 ### P0 遗留（阻塞 Phase 2 启动）
 
-#### T1-21: Expert 文章编辑页面
-- [ ] 开发 `/my/articles/:id/edit` 页面（复用 ArticleNew 的 TipTap 编辑器）
-- [ ] 路由已注册但组件未创建
-- [ ] _需求: FR-C01_
-
-#### T1-22: Admin 用户管理页面
-- [ ] 开发 `/admin/users` 页面
-- [ ] 开发 `cloud/user-crud/` 的 disable/enable/promote action（已部署但需验证）
-- [ ] 路由未在 App.tsx 中注册
-- [ ] _需求: FR-U06_
-
 #### T1-23: Admin 官方出品页面
-- [ ] 开发 `/admin/official` 页面
-- [ ] 路由未在 App.tsx 中注册
+- [ ] 开发 `/admin/official` 页面 — 复用 `ArticleNew` 组件，新建时设置 `type: 'official'`
+- [ ] 路由已在 App.tsx 中注册（`/admin/official` → `ArticleNew`）
 - [ ] _需求: FR-O01_
 
 ### P0 新增 — 评测榜单前台
@@ -42,6 +31,9 @@
 - [ ] 支持排序（overallScore, correctness, security, maintainability, robustness）
 - [ ] `Leaderboard` 组件不存在于 `src/web/src/pages/`
 - [ ] _需求: FR-E04, FR-E05_
+
+> **说明**：用户管理（`/admin/users`）已从产品规划中移除。
+> 官方出品文章创建入口为 `/admin/official`，复用餐布局。
 
 #### T1-01: CloudBase 环境初始化
 - [x] 创建 CloudBase 环境，获取 envId
