@@ -6,7 +6,7 @@
     "serviceName": "forge",
     "framework": "vite",
     "installCommand": "npm install",
-    "buildCommand": "vite build",
+    "buildCommand": "npm build",
     "outputDir": "./dist",
     "deployPath": "/forge"
   }
