@@ -4,7 +4,7 @@ import dayjs from 'dayjs'
 import ResponsiveContainer from '../../components/common/ResponsiveContainer'
 
 async function fetchCollections() {
-  const res = await fetch('https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/forge-article-crud', {
+  const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/forge/article-crud', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'myCollections', data: { page: 1, pageSize: 20 } }),
   })

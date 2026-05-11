@@ -4,7 +4,7 @@ import dayjs from 'dayjs'
 import ResponsiveContainer from '../../components/common/ResponsiveContainer'
 
 async function fetchEvaluations({ page = 1, skillId }: { page?: number; skillId?: string }) {
-  const res = await fetch('https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/forge-evaluation-crud', {
+  const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/forge/evaluation-crud', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'list', data: { page, pageSize: 50, skillId } }),
   })
@@ -12,7 +12,7 @@ async function fetchEvaluations({ page = 1, skillId }: { page?: number; skillId?
 }
 
 async function fetchSkills() {
-  const res = await fetch('https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/forge-skill-crud', {
+  const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/forge/skill-crud', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'list' }),
   })
@@ -20,7 +20,7 @@ async function fetchSkills() {
 }
 
 async function createEvaluation(data: any) {
-  const res = await fetch('https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/forge-evaluation-crud', {
+  const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/forge/evaluation-crud', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'create', data }),
   })
@@ -28,7 +28,7 @@ async function createEvaluation(data: any) {
 }
 
 async function deleteEvaluation(evaluationId: string) {
-  const res = await fetch('https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/forge-evaluation-crud', {
+  const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/forge/evaluation-crud', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'delete', data: { evaluationId } }),
   })
@@ -36,7 +36,7 @@ async function deleteEvaluation(evaluationId: string) {
 }
 
 async function createSkill(name: string, description: string, icon: string, color: string) {
-  const res = await fetch('https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/forge-skill-crud', {
+  const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/forge/skill-crud', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'create', data: { name, description, icon, color } }),
   })
@@ -44,7 +44,7 @@ async function createSkill(name: string, description: string, icon: string, colo
 }
 
 async function deleteSkill(skillId: string) {
-  const res = await fetch('https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/forge-skill-crud', {
+  const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/forge/skill-crud', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'delete', data: { skillId } }),
   })

@@ -4,16 +4,16 @@ import { useQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import ResponsiveContainer from '../../components/common/ResponsiveContainer'
 
-const API_BASE = 'https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com'
+const API_BASE = 'https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/forge'
 
 async function searchAll(keyword: string) {
   const [articlesRes, skillsRes] = await Promise.all([
-    fetch(`${API_BASE}/forge-article-crud`, {
+    fetch(`${API_BASE}/article-crud`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'search', data: { keyword } }),
     }),
-    fetch(`${API_BASE}/forge-skill-crud`, {
+    fetch(`${API_BASE}/skill-crud`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'search', data: { keyword } }),

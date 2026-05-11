@@ -4,7 +4,7 @@ import dayjs from 'dayjs'
 import ResponsiveContainer from '../components/common/ResponsiveContainer'
 
 async function fetchExpertProfile(userId: string) {
-  const res = await fetch('https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/forge-user-crud', {
+  const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/forge/user-crud', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'get', data: { userId } }),
@@ -13,7 +13,7 @@ async function fetchExpertProfile(userId: string) {
 }
 
 async function fetchExpertArticles(userId: string) {
-  const res = await fetch('https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/forge-article-crud', {
+  const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/forge/article-crud', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'list', data: { authorId: userId } }),

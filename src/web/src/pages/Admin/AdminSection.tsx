@@ -2,10 +2,10 @@ import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import ResponsiveContainer from '../../components/common/ResponsiveContainer'
 
-const API = 'https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com'
+const API = 'https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/forge'
 
 async function fetchSections() {
-  const res = await fetch(`${API}/forge-section-crud`, {
+  const res = await fetch(`${API}/section-crud`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'list' }),
   })
@@ -18,7 +18,7 @@ async function createSection(title: string, type: string) {
   else if (type === 'skill_leaderboard') config = { skillId: '', limit: 10 }
   else if (type === 'external_link') config = { url: '', description: '' }
 
-  const res = await fetch(`${API}/forge-section-crud`, {
+  const res = await fetch(`${API}/section-crud`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'create', data: { title, type, config, enabled: true, order: 99 } }),
   })
@@ -26,7 +26,7 @@ async function createSection(title: string, type: string) {
 }
 
 async function updateSection(sectionId: string, data: any) {
-  const res = await fetch(`${API}/forge-section-crud`, {
+  const res = await fetch(`${API}/section-crud`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'update', data: { sectionId, ...data } }),
   })
@@ -34,7 +34,7 @@ async function updateSection(sectionId: string, data: any) {
 }
 
 async function deleteSection(sectionId: string) {
-  const res = await fetch(`${API}/forge-section-crud`, {
+  const res = await fetch(`${API}/section-crud`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'delete', data: { sectionId } }),
   })

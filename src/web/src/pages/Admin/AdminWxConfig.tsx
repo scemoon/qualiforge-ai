@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import ResponsiveContainer from '../../components/common/ResponsiveContainer'
 
-const API_BASE = 'https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com'
+const API_BASE = 'https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/forge'
 const STORAGE_KEY = 'user_wx_config'
 
 interface WxForm {
@@ -12,7 +12,7 @@ interface WxForm {
 }
 
 async function fetchUser(userId: string) {
-  const res = await fetch(`${API_BASE}/forge-user-crud`, {
+  const res = await fetch(`${API_BASE}/user-crud`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'get', data: { userId } }),
@@ -21,7 +21,7 @@ async function fetchUser(userId: string) {
 }
 
 async function updateUserWxConfig(userId: string, wxConfig: WxForm) {
-  const res = await fetch(`${API_BASE}/forge-user-crud`, {
+  const res = await fetch(`${API_BASE}/user-crud`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'update', data: { userId, wxOfficialAccount: wxConfig } }),

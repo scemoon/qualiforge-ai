@@ -4,10 +4,10 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import ResponsiveContainer from '../../components/common/ResponsiveContainer'
 
-const API_BASE = 'https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com'
+const API_BASE = 'https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/forge'
 
 async function fetchMyArticles({ page = 1, status }: { page?: number; status?: string }) {
-  const res = await fetch(`${API_BASE}/forge-article-crud`, {
+  const res = await fetch(`${API_BASE}/article-crud`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'listMyArticles', data: { page, pageSize: 20, status: status || undefined } }),
@@ -16,7 +16,7 @@ async function fetchMyArticles({ page = 1, status }: { page?: number; status?: s
 }
 
 async function deleteArticle(articleId: string) {
-  const res = await fetch(`${API_BASE}/forge-article-crud`, {
+  const res = await fetch(`${API_BASE}/article-crud`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'delete', data: { articleId } }),

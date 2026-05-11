@@ -6,11 +6,11 @@ import ResponsiveContainer from '../components/common/ResponsiveContainer'
 import { useAuthStore } from '../store/authStore'
 
 // API endpoint
-const API_BASE = 'https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com'
+const API_BASE = 'https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/forge'
 
 async function fetchSections() {
   try {
-    const res = await fetch(`${API_BASE}/forge-section-crud`, {
+    const res = await fetch(`${API_BASE}/section-crud`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'list' }),
@@ -24,7 +24,7 @@ async function fetchSections() {
 
 async function fetchSkillTags() {
   try {
-    const res = await fetch(`${API_BASE}/forge-skill-crud`, {
+    const res = await fetch(`${API_BASE}/skill-crud`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'list' }),
