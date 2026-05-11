@@ -27,7 +27,7 @@ interface DetailModalProps {
 }
 
 async function fetchArticles({ page = 1, status }: { page?: number; status?: string }) {
-  const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/forge/article-crud', {
+  const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/api/forge/article-crud', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'list', data: { page, pageSize: 20, status: status || undefined } }),
   })
@@ -35,7 +35,7 @@ async function fetchArticles({ page = 1, status }: { page?: number; status?: str
 }
 
 async function fetchArticle(articleId: string) {
-  const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/forge/article-crud', {
+  const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/api/forge/article-crud', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'get', data: { articleId } }),
   })
@@ -43,7 +43,7 @@ async function fetchArticle(articleId: string) {
 }
 
 async function approveArticle(articleId: string) {
-  const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/forge/article-crud', {
+  const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/api/forge/article-crud', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'approve', data: { articleId } }),
   })
@@ -51,7 +51,7 @@ async function approveArticle(articleId: string) {
 }
 
 async function rejectArticle(articleId: string, reason: string) {
-  const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/forge/article-crud', {
+  const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/api/forge/article-crud', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'reject', data: { articleId, reason } }),
   })
@@ -59,7 +59,7 @@ async function rejectArticle(articleId: string, reason: string) {
 }
 
 async function deleteArticle(articleId: string) {
-  const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/forge/article-crud', {
+  const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/api/forge/article-crud', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'delete', data: { articleId } }),
   })

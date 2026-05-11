@@ -6,7 +6,7 @@ import ResponsiveContainer from '../components/common/ResponsiveContainer'
 import { useAuthStore } from '../store/authStore'
 
 // API endpoint
-const API_BASE = 'https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/forge'
+const API_BASE = 'https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/api/forge'
 
 async function fetchSections() {
   try {

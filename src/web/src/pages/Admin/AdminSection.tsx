@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import ResponsiveContainer from '../../components/common/ResponsiveContainer'
 
-const API = 'https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/forge'
+const API = 'https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/api/forge'
 
 async function fetchSections() {
   const res = await fetch(`${API}/section-crud`, {

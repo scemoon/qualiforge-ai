@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import ResponsiveContainer from '../../components/common/ResponsiveContainer'
 
 async function fetchTags() {
-  const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/forge/article-crud', {
+  const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/api/forge/article-crud', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'listTags' }),
   })
@@ -11,7 +11,7 @@ async function fetchTags() {
 }
 
 async function createTag(name: string, color: string) {
-  const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/forge/article-crud', {
+  const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/api/forge/article-crud', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'createTag', data: { name, color } }),
   })
@@ -19,7 +19,7 @@ async function createTag(name: string, color: string) {
 }
 
 async function deleteTag(tagId: string) {
-  const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/forge/article-crud', {
+  const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/api/forge/article-crud', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'deleteTag', data: { tagId } }),
   })

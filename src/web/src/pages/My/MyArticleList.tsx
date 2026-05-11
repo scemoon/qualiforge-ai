@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import ResponsiveContainer from '../../components/common/ResponsiveContainer'
 
-const API_BASE = 'https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/forge'
+const API_BASE = 'https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/api/forge'
 
 async function fetchMyArticles({ page = 1, status }: { page?: number; status?: string }) {
   const res = await fetch(`${API_BASE}/article-crud`, {

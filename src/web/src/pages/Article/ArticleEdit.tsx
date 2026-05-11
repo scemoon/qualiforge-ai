@@ -4,7 +4,7 @@ import { useQuery, useMutation } from '@tanstack/react-query'
 import ArticleEditor from '@/components/common/ArticleEditor'
 
 async function fetchArticle(id: string) {
-  const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/forge/article-crud', {
+  const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/api/forge/article-crud', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'get', data: { articleId: id } }),
   })
@@ -12,7 +12,7 @@ async function fetchArticle(id: string) {
 }
 
 async function fetchTags() {
-  const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/forge/article-crud', {
+  const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/api/forge/article-crud', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'listTags' }),
   })
@@ -20,7 +20,7 @@ async function fetchTags() {
 }
 
 async function updateArticle(data: any) {
-  const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/forge/article-crud', {
+  const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/api/forge/article-crud', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'update', data }),
   })

@@ -12,7 +12,7 @@ import Link$1 from '@tiptap/extension-link'
 import Image from '@tiptap/extension-image'
 import CodeBlock from '@tiptap/extension-code-block'
 
-const API = 'https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/forge'
+const API = 'https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/api/forge'
 
 async function fetchArticle(id: string) {
   const res = await fetch(`${API}/article-crud`, {

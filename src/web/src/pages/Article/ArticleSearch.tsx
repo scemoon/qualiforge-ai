@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import ResponsiveContainer from '../../components/common/ResponsiveContainer'
 
-const API_BASE = 'https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/forge'
+const API_BASE = 'https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/api/forge'
 
 async function searchAll(keyword: string) {
   const [articlesRes, skillsRes] = await Promise.all([

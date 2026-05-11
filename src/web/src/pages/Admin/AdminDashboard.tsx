@@ -3,15 +3,15 @@ import ResponsiveContainer from '../../components/common/ResponsiveContainer'
 
 async function fetchStats() {
   const [articlesRes, usersRes, skillsRes] = await Promise.all([
-    fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/forge/article-crud', {
+    fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/api/forge/article-crud', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'list', data: { page: 1, pageSize: 1 } }),
     }),
-    fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/forge/user-crud', {
+    fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/api/forge/user-crud', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'list', data: { page: 1, pageSize: 1 } }),
     }),
-    fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/forge/skill-crud', {
+    fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/api/forge/skill-crud', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'list' }),
     }),

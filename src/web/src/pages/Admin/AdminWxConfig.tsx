@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import ResponsiveContainer from '../../components/common/ResponsiveContainer'
 
-const API_BASE = 'https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/forge'
+const API_BASE = 'https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/api/forge'
 const STORAGE_KEY = 'user_wx_config'
 
 interface WxForm {

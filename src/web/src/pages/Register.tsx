@@ -20,7 +20,7 @@ export default function Register() {
     setError('')
     setLoading(true)
     try {
-      const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/forge/auth', {
+      const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/api/forge/auth', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'sendRegisterCode', data: { email: form.email } }),
       })
@@ -51,7 +51,7 @@ export default function Register() {
     try {
       if (mode === 'code') {
         if (!form.code || form.code.length !== 6) { setError('请输入 6 位验证码'); setLoading(false); return }
-        const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/forge/auth', {
+        const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/api/forge/auth', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ action: 'registerWithCode', data: form }),
         })
@@ -61,14 +61,14 @@ export default function Register() {
         navigate('/forge/')
       } else {
         if (form.password.length < 8) { setError('密码长度至少 8 位'); setLoading(false); return }
-        const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/forge/auth', {
+        const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/api/forge/auth', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ action: 'register', data: form }),
         })
         const data = await res.json()
         if (data.code !== 0) { setError(data.message || '注册失败'); setLoading(false); return }
         // Auto login
-        const loginRes = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/forge/auth', {
+        const loginRes = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/api/forge/auth', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ action: 'login', data: { email: form.email, password: form.password } }),
         })

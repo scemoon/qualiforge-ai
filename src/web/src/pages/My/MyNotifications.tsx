@@ -3,7 +3,7 @@ import dayjs from 'dayjs'
 import ResponsiveContainer from '../../components/common/ResponsiveContainer'
 
 async function fetchNotifications() {
-  const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/forge/notification-crud', {
+  const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/api/forge/notification-crud', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'list', data: { page: 1, pageSize: 20 } }),
   })
@@ -11,7 +11,7 @@ async function fetchNotifications() {
 }
 
 async function markOneRead(notificationId: string) {
-  const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/forge/notification-crud', {
+  const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/api/forge/notification-crud', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'markRead', data: { notificationId } }),
   })
@@ -19,7 +19,7 @@ async function markOneRead(notificationId: string) {
 }
 
 async function markAllRead() {
-  const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/forge/notification-crud', {
+  const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/api/forge/notification-crud', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'markRead', data: {} }),
   })
