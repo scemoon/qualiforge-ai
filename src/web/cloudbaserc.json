@@ -4,7 +4,7 @@
   "$schema": "https://framework-1258016615.tcloudbaseapp.com/schema/latest.json",
   "app": {
     "serviceName": "forge",
-    "framework": "react",
+    "framework": "vite",
     "installCommand": "npm install",
     "buildCommand": "vite build",
     "outputDir": "./dist"
