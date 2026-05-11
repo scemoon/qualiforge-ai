@@ -10,9 +10,9 @@ export default defineConfig({
     rollupOptions: {
       output: {
         // 内容哈希作为版本号，确保 CDN 缓存失效
-        assetFileNames: 'static/[name]-[hash][extname]',
-        chunkFileNames: 'static/[name]-[hash].js',
-        entryFileNames: "static/[name]-v2-[hash].js",
+        assetFileNames: 'assets/[name]-[hash][extname]',
+        chunkFileNames: 'assets/[name]-[hash].js',
+        entryFileNames: "assets/[name]-v2-[hash].js",
       },
     },
   },
