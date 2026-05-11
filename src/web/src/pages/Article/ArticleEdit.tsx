@@ -4,7 +4,7 @@ import { useQuery, useMutation } from '@tanstack/react-query'
 import ArticleEditor from '@/components/common/ArticleEditor'
 
 async function fetchArticle(id: string) {
-  const res = await fetch('https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/article-crud', {
+  const res = await fetch('https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/forge-article-crud', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'get', data: { articleId: id } }),
   })
@@ -12,7 +12,7 @@ async function fetchArticle(id: string) {
 }
 
 async function fetchTags() {
-  const res = await fetch('https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/article-crud', {
+  const res = await fetch('https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/forge-article-crud', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'listTags' }),
   })
@@ -20,7 +20,7 @@ async function fetchTags() {
 }
 
 async function updateArticle(data: any) {
-  const res = await fetch('https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/article-crud', {
+  const res = await fetch('https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/forge-article-crud', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'update', data }),
   })
@@ -49,7 +49,7 @@ export default function ArticleEdit() {
     onSuccess: (data) => {
       if (data.code === 0) {
         alert('文章已更新')
-        navigate('/my')
+        navigate('/forge/my')
       } else {
         alert(data.message || '更新失败')
       }
@@ -94,7 +94,7 @@ export default function ArticleEdit() {
       {/* 页面标题 */}
       <div className="flex items-center gap-3 mb-4 sm:mb-6">
         <Link
-          to={`/article/${id}`}
+          to={`/forge/article/${id}`}
           className="text-[#4B5563] hover:text-[#111827] text-lg sm:text-xl p-1"
           title="返回文章详情"
         >
@@ -102,7 +102,7 @@ export default function ArticleEdit() {
         </Link>
         <h1 className="text-xl sm:text-2xl font-bold text-[#111827]">编辑文章</h1>
         <Link
-          to={`/article/${id}`}
+          to={`/forge/article/${id}`}
           className="ml-auto text-xs sm:text-sm text-[#4F46E5] hover:underline whitespace-nowrap"
         >
           返回详情
@@ -195,7 +195,7 @@ export default function ArticleEdit() {
             )}
           </button>
           <Link
-            to={`/article/${id}`}
+            to={`/forge/article/${id}`}
             className="w-full sm:w-auto px-4 py-2.5 border border-[#E5E7EB] rounded-lg text-sm text-[#4B5563] hover:bg-[#F9FAFB] transition text-center"
           >
             取消

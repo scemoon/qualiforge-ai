@@ -3,73 +3,73 @@
   "functionRoot": ".",
   "functions": [
     {
-      "name": "auth",
+      "name": "forge-auth",
       "timeout": 10,
       "memorySize": 256,
       "runtime": "Nodejs20.19"
     },
     {
-      "name": "article-crud",
+      "name": "forge-article-crud",
       "timeout": 10,
       "memorySize": 512,
       "runtime": "Nodejs20.19"
     },
     {
-      "name": "skill-crud",
+      "name": "forge-skill-crud",
       "timeout": 10,
       "memorySize": 256,
       "runtime": "Nodejs20.19"
     },
     {
-      "name": "evaluation-crud",
+      "name": "forge-evaluation-crud",
       "timeout": 10,
       "memorySize": 256,
       "runtime": "Nodejs20.19"
     },
     {
-      "name": "section-crud",
+      "name": "forge-section-crud",
       "timeout": 10,
       "memorySize": 256,
       "runtime": "Nodejs20.19"
     },
     {
-      "name": "notification-crud",
+      "name": "forge-notification-crud",
       "timeout": 10,
       "memorySize": 256,
       "runtime": "Nodejs20.19"
     },
     {
-      "name": "user-crud",
+      "name": "forge-user-crud",
       "timeout": 10,
       "memorySize": 256,
       "runtime": "Nodejs20.19"
     },
     {
-      "name": "search",
+      "name": "forge-search",
       "timeout": 10,
       "memorySize": 256,
       "runtime": "Nodejs20.19"
     },
     {
-      "name": "file-upload",
+      "name": "forge-file-upload",
       "timeout": 30,
       "memorySize": 512,
       "runtime": "Nodejs20.19"
     },
     {
-      "name": "wechat-sync",
+      "name": "forge-wechat-sync",
       "timeout": 30,
       "memorySize": 256,
       "runtime": "Nodejs20.19"
     },
     {
-      "name": "data-seeder",
+      "name": "forge-data-seeder",
       "timeout": 60,
       "memorySize": 512,
       "runtime": "Nodejs18.15"
     },
     {
-      "name": "section-reset",
+      "name": "forge-section-reset",
       "timeout": 10,
       "memorySize": 256
     }

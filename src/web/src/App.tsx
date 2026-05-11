@@ -27,19 +27,19 @@ import NotFound from './pages/NotFound'
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useAuthStore()
-  return isAuthenticated ? children : <Navigate to="/login" replace />
+  return isAuthenticated ? children : <Navigate to="/forge/login" replace />
 }
 
 function RequireAdmin({ children }: { children: React.ReactNode }) {
   const { isAdmin } = useAuthStore()
-  return isAdmin ? children : <Navigate to="/" replace />
+  return isAdmin ? children : <Navigate to="/forge/" replace />
 }
 
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/article">
+      <Route path="/forge/" element={<Home />} />
+      <Route path="/forge/article">
         <Route path="search" element={<Search />} />
         <Route path=':id' element={<ArticleDetail />}></Route>
         <Route path="new" element={<RequireAuth><ArticleNew /></RequireAuth>} />
@@ -47,17 +47,17 @@ export default function App() {
       </Route>
 
       <Route element={<PublicLayout />}>
-        <Route path="/tags" element={<Tags />} />
-        <Route path="/expert/:id" element={<ExpertProfile />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/forge/tags" element={<Tags />} />
+        <Route path="/forge/expert/:id" element={<ExpertProfile />} />
+        <Route path="/forge/login" element={<Login />} />
+        <Route path="/forge/register" element={<Register />} />
       </Route>
 
       {/* Article edit pages — standalone full-width (no sidebar) */}
       
 
       {/* Expert Center — sidebar layout */}
-      <Route path="/my" element={<RequireAuth><MyLayout /></RequireAuth>}>
+      <Route path="/forge/my" element={<RequireAuth><MyLayout /></RequireAuth>}>
         <Route index element={<MyDashboard />} />
         <Route path="articles" element={<MyArticleList />} />
         <Route path="articles/new" element={<ArticleNew />} />
@@ -66,7 +66,7 @@ export default function App() {
       </Route>
 
       {/* Admin — sidebar layout */}
-      <Route path="/admin" element={<RequireAuth><RequireAdmin><AdminLayout /></RequireAdmin></RequireAuth>}>
+      <Route path="/forge/admin" element={<RequireAuth><RequireAdmin><AdminLayout /></RequireAdmin></RequireAuth>}>
         <Route index element={<AdminDashboard />} />
         <Route path="articles" element={<AdminArticleList />} />
         <Route path="evaluations" element={<AdminEvaluation />} />

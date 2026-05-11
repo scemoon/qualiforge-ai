@@ -49,7 +49,7 @@ export default function SectionBlock({ section, selectedTag = null, currentPage 
           return (
             <Link
               key={article._id}
-              to={`/article/${article._id}`}
+              to={`/forge/article/${article._id}`}
               className="group block bg-white rounded-xl border border-[#E5E7EB] p-4 hover:border-indigo-300 hover:shadow-md transition-all"
             >
               <div className="flex gap-4">
@@ -209,7 +209,7 @@ export default function SectionBlock({ section, selectedTag = null, currentPage 
             </div>
             <div className="col-span-3 text-right">
               <Link
-                to={`/article/${ev.articleId || ev._id}`}
+                to={`/forge/article/${ev.articleId || ev._id}`}
                 className="inline-flex items-center gap-1 text-sm text-indigo-600 hover:text-indigo-800 font-medium"
               >
                 查看详情
@@ -223,7 +223,7 @@ export default function SectionBlock({ section, selectedTag = null, currentPage 
         {/* Leaderboard footer */}
         <div className="px-4 py-3 bg-[#F9FAFB] border-t border-[#E5E7EB]">
           <Link
-            to="/leaderboard"
+            to="/forge/leaderboard"
             className="inline-flex items-center gap-1 text-sm text-indigo-600 hover:text-indigo-800 font-medium"
           >
             查看完整榜单

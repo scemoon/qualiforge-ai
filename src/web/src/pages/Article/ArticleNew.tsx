@@ -4,7 +4,7 @@ import { useQuery, useMutation } from '@tanstack/react-query'
 import ArticleEditor from '@/components/common/ArticleEditor'
 
 async function fetchTags() {
-  const res = await fetch('https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/article-crud', {
+  const res = await fetch('https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/forge-article-crud', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'listTags' }),
   })
@@ -12,7 +12,7 @@ async function fetchTags() {
 }
 
 async function createArticle(data: any) {
-  const res = await fetch('https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/article-crud', {
+  const res = await fetch('https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/forge-article-crud', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'create', data }),
   })
@@ -33,7 +33,7 @@ export default function ArticleNew() {
     onSuccess: (data) => {
       if (data.code === 0) {
         alert('文章已提交，等待管理员审核！')
-        navigate('/my')
+        navigate('/forge/my')
       } else {
         alert(data.message || '提交失败')
       }

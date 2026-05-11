@@ -3,15 +3,15 @@ import ResponsiveContainer from '../../components/common/ResponsiveContainer'
 
 async function fetchStats() {
   const [articlesRes, usersRes, skillsRes] = await Promise.all([
-    fetch('https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/article-crud', {
+    fetch('https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/forge-article-crud', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'list', data: { page: 1, pageSize: 1 } }),
     }),
-    fetch('https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/user-crud', {
+    fetch('https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/forge-user-crud', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'list', data: { page: 1, pageSize: 1 } }),
     }),
-    fetch('https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/skill-crud', {
+    fetch('https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/forge-skill-crud', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'list' }),
     }),
@@ -55,8 +55,8 @@ export default function AdminDashboard() {
       <div className="mt-6 md:mt-8">
         <h2 className="text-base sm:text-lg font-bold text-[#111827] mb-3 md:mb-4">快速操作</h2>
         <div className="flex flex-wrap gap-2 md:gap-3">
-          <a href="/my/article/new" className="px-4 py-2 bg-[#4F46E5] text-white rounded-md text-sm hover:bg-[#4338CA] transition">新建文章</a>
-          <a href="/admin/articles" className="px-4 py-2 bg-[#F59E0B] text-white rounded-md text-sm hover:bg-[#D97706] transition">文章管理</a>
+          <a href="/forge/my/article/new" className="px-4 py-2 bg-[#4F46E5] text-white rounded-md text-sm hover:bg-[#4338CA] transition">新建文章</a>
+          <a href="/forge/admin/articles" className="px-4 py-2 bg-[#F59E0B] text-white rounded-md text-sm hover:bg-[#D97706] transition">文章管理</a>
           <a href="/admin/evaluations" className="px-4 py-2 bg-[#4F46E5] text-white rounded-md text-sm hover:bg-[#4338CA] transition">评测管理</a>
           <a href="/admin/sections" className="px-4 py-2 bg-[#10B981] text-white rounded-md text-sm hover:bg-[#059669] transition">管理板块</a>
         </div>

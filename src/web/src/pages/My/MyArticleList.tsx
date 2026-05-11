@@ -7,7 +7,7 @@ import ResponsiveContainer from '../../components/common/ResponsiveContainer'
 const API_BASE = 'https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com'
 
 async function fetchMyArticles({ page = 1, status }: { page?: number; status?: string }) {
-  const res = await fetch(`${API_BASE}/article-crud`, {
+  const res = await fetch(`${API_BASE}/forge-article-crud`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'listMyArticles', data: { page, pageSize: 20, status: status || undefined } }),
@@ -16,7 +16,7 @@ async function fetchMyArticles({ page = 1, status }: { page?: number; status?: s
 }
 
 async function deleteArticle(articleId: string) {
-  const res = await fetch(`${API_BASE}/article-crud`, {
+  const res = await fetch(`${API_BASE}/forge-article-crud`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'delete', data: { articleId } }),
@@ -62,7 +62,7 @@ export default function MyArticleList() {
   return (
     <ResponsiveContainer className="py-6 md:py-8">
       <div className="mb-4">
-        <Link to="/my/articles/new" className="inline-block px-4 py-2 bg-[#4F46E5] text-white rounded-md text-sm hover:bg-[#4338CA] transition">
+        <Link to="/forge/my/articles/new" className="inline-block px-4 py-2 bg-[#4F46E5] text-white rounded-md text-sm hover:bg-[#4338CA] transition">
           新建文章
         </Link>
       </div>
@@ -99,7 +99,7 @@ export default function MyArticleList() {
             <div key={article._id} className="bg-white rounded-lg border border-[#E5E7EB] p-4 hover:shadow-sm transition">
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                 <div className="min-w-0">
-                  <Link to={`/article/${article._id}`} className="text-lg font-semibold text-[#111827] hover:text-[#4F46E5] line-clamp-2">
+                  <Link to={`/forge/article/${article._id}`} className="text-lg font-semibold text-[#111827] hover:text-[#4F46E5] line-clamp-2">
                     {article.title || '无标题文章'}
                   </Link>
                   <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-[#6B7280]">
@@ -114,8 +114,8 @@ export default function MyArticleList() {
               </div>
 
               <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-[#4B5563]">
-                <Link to={`/article/${article._id}`} className="text-[#4F46E5] hover:underline">查看</Link>
-                <Link to={`/article/${article._id}/edit`} className="text-[#4F46E5] hover:underline">编辑</Link>
+                <Link to={`/forge/article/${article._id}`} className="text-[#4F46E5] hover:underline">查看</Link>
+                <Link to={`/forge/article/${article._id}/edit`} className="text-[#4F46E5] hover:underline">编辑</Link>
                 <button
                   type="button"
                   className="text-[#EF4444] hover:underline"

@@ -11,12 +11,12 @@ type NavItem = {
 }
 
 const navItems: NavItem[] = [
-  { path: '/admin', label: '首页', icon: '🏠', exact: true },
-  { path: '/admin/articles', label: '文章管理', icon: '📝' },
-  { path: '/admin/evaluations', label: '评测管理', icon: '🎯' },
-  { path: '/admin/sections', label: '板块管理', icon: '📋' },
-  { path: '/admin/tags', label: '标签管理', icon: '🏷️' },
-  { path: '/admin/wx-config', label: '公众号配置', icon: '📌' },
+  { path: '/forge/admin', label: '首页', icon: '🏠', exact: true },
+  { path: '/forge/admin/articles', label: '文章管理', icon: '📝' },
+  { path: '/forge/admin/evaluations', label: '评测管理', icon: '🎯' },
+  { path: '/forge/admin/sections', label: '板块管理', icon: '📋' },
+  { path: '/forge/admin/tags', label: '标签管理', icon: '🏷️' },
+  { path: '/forge/admin/wx-config', label: '公众号配置', icon: '📌' },
 ]
 
 export default function AdminLayout() {
@@ -93,7 +93,7 @@ export default function AdminLayout() {
           })}
         </nav>
         <div className="p-3 border-t border-[#E5E7EB] flex items-center justify-between">
-          <Link to="/" className="text-xs text-[#4F46E5] hover:underline">← 返回主页</Link>
+          <Link to="/forge/" className="text-xs text-[#4F46E5] hover:underline">← 返回主页</Link>
           <button onClick={logout} className="text-xs text-[#9CA3AF] hover:text-[#EF4444]">退出</button>
         </div>
       </aside>
@@ -108,7 +108,7 @@ export default function AdminLayout() {
           >
             ☰
           </button>
-          <Link to="/" className="text-sm text-[#4F46E5] hover:underline font-medium">← 返回主页</Link>
+          <Link to="/forge/" className="text-sm text-[#4F46E5] hover:underline font-medium">← 返回主页</Link>
           <div className="w-8" />
         </div>
 

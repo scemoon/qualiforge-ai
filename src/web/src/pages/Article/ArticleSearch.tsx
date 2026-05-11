@@ -8,12 +8,12 @@ const API_BASE = 'https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com'
 
 async function searchAll(keyword: string) {
   const [articlesRes, skillsRes] = await Promise.all([
-    fetch(`${API_BASE}/article-crud`, {
+    fetch(`${API_BASE}/forge-article-crud`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'search', data: { keyword } }),
     }),
-    fetch(`${API_BASE}/skill-crud`, {
+    fetch(`${API_BASE}/forge-skill-crud`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'search', data: { keyword } }),
@@ -97,7 +97,7 @@ export default function Search() {
         ) : (
           <div className="space-y-3">
             {data?.articles.map((article: any) => (
-              <Link key={article._id} to={`/article/${article._id}`} className="block bg-white rounded-lg border border-[#E5E7EB] p-4 hover:shadow-md transition">
+              <Link key={article._id} to={`/forge/article/${article._id}`} className="block bg-white rounded-lg border border-[#E5E7EB] p-4 hover:shadow-md transition">
                 <h3 className="font-medium text-[#111827] mb-2 line-clamp-2">{article.title}</h3>
                 <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-[#9CA3AF]">
                   <span>{article.author?.nickname}</span>

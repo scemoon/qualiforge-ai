@@ -4,7 +4,7 @@ import dayjs from 'dayjs'
 import ResponsiveContainer from '../../components/common/ResponsiveContainer'
 
 async function fetchCollections() {
-  const res = await fetch('https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/article-crud', {
+  const res = await fetch('https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/forge-article-crud', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'myCollections', data: { page: 1, pageSize: 20 } }),
   })
@@ -24,12 +24,12 @@ export default function MyCollection() {
       ) : articles.length === 0 ? (
         <div className="text-center py-16 text-[#9CA3AF]">
           <p>还没有收藏任何文章</p>
-          <Link to="/article/search" className="mt-3 inline-block text-sm text-[#4F46E5] hover:underline">去浏览 →</Link>
+          <Link to="/forge/article/search" className="mt-3 inline-block text-sm text-[#4F46E5] hover:underline">去浏览 →</Link>
         </div>
       ) : (
         <div className="space-y-3 md:space-y-4">
           {articles.map((article: any) => (
-            <Link key={article._id} to={`/article/${article._id}`} className="block bg-white rounded-lg border border-[#E5E7EB] p-4 hover:shadow-md transition">
+            <Link key={article._id} to={`/forge/article/${article._id}`} className="block bg-white rounded-lg border border-[#E5E7EB] p-4 hover:shadow-md transition">
               <h3 className="font-medium text-[#111827] mb-2 line-clamp-2">{article.title}</h3>
               <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-[#9CA3AF]">
                 <span>{article.authorId || '匿名'}</span>

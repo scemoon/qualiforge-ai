@@ -12,7 +12,7 @@ interface WxForm {
 }
 
 async function fetchUser(userId: string) {
-  const res = await fetch(`${API_BASE}/user-crud`, {
+  const res = await fetch(`${API_BASE}/forge-user-crud`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'get', data: { userId } }),
@@ -21,7 +21,7 @@ async function fetchUser(userId: string) {
 }
 
 async function updateUserWxConfig(userId: string, wxConfig: WxForm) {
-  const res = await fetch(`${API_BASE}/user-crud`, {
+  const res = await fetch(`${API_BASE}/forge-user-crud`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'update', data: { userId, wxOfficialAccount: wxConfig } }),

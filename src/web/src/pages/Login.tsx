@@ -15,7 +15,7 @@ export default function Login() {
     setError('')
     setLoading(true)
     try {
-      const res = await fetch('https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/auth', {
+      const res = await fetch('https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/forge-auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'login', data: { email, password } }),
@@ -26,7 +26,7 @@ export default function Login() {
         return
       }
       login(data.data.user, data.data.token)
-      navigate('/')
+      navigate('/forge/')
     } catch (err: any) {
       setError(err.message || '网络错误')
     } finally {
@@ -71,7 +71,7 @@ export default function Login() {
           </button>
         </form>
         <p className="mt-4 text-center text-sm text-[#4B5563]">
-          还没有账号？<Link to="/register" className="text-[#4F46E5] hover:underline">注册专家</Link>
+          还没有账号？<Link to="/forge/register" className="text-[#4F46E5] hover:underline">注册专家</Link>
         </p>
       </div>
     </div>

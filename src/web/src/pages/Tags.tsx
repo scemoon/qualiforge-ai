@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import ResponsiveContainer from '../components/common/ResponsiveContainer'
 
 async function fetchTags() {
-  const res = await fetch('https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/article-crud', {
+  const res = await fetch('https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/forge-article-crud', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'listTags' }),
@@ -28,7 +28,7 @@ export default function Tags() {
           {tags.map((tag: any) => (
             <Link
               key={tag._id}
-              to={`/article/search?tag=${tag._id}`}
+              to={`/forge/article/search?tag=${tag._id}`}
               className="bg-white rounded-lg border border-[#E5E7EB] p-4 hover:border-[#4F46E5] hover:shadow transition text-center"
             >
               <span className="text-lg font-medium text-[#111827] block">{tag.name}</span>

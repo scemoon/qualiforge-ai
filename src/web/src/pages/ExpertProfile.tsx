@@ -4,7 +4,7 @@ import dayjs from 'dayjs'
 import ResponsiveContainer from '../components/common/ResponsiveContainer'
 
 async function fetchExpertProfile(userId: string) {
-  const res = await fetch('https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/user-crud', {
+  const res = await fetch('https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/forge-user-crud', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'get', data: { userId } }),
@@ -13,7 +13,7 @@ async function fetchExpertProfile(userId: string) {
 }
 
 async function fetchExpertArticles(userId: string) {
-  const res = await fetch('https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/article-crud', {
+  const res = await fetch('https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/forge-article-crud', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'list', data: { authorId: userId } }),
@@ -79,7 +79,7 @@ export default function ExpertProfile() {
         ) : (
           <div className="space-y-3">
             {articles.map((article: any) => (
-              <Link key={article._id} to={`/article/${article._id}`} className="block bg-white rounded-lg border border-[#E5E7EB] p-4 hover:shadow-md transition">
+              <Link key={article._id} to={`/forge/article/${article._id}`} className="block bg-white rounded-lg border border-[#E5E7EB] p-4 hover:shadow-md transition">
                 <h3 className="font-medium text-[#111827] mb-2 line-clamp-2">{article.title}</h3>
                 <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-[#9CA3AF]">
                   <span>{dayjs(article.publishedAt || article.createdAt).format('YYYY-MM-DD')}</span>

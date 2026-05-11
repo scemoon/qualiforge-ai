@@ -3,7 +3,7 @@
   "envId": "cloud1-2gavd8kj8a1ce021",
   "$schema": "https://framework-1258016615.tcloudbaseapp.com/schema/latest.json",
   "app": {
-    "serviceName": "forgeai",
+    "serviceName": "forge",
     "framework": "react",
     "installCommand": "npm install",
     "buildCommand": "vite build",

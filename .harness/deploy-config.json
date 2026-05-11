@@ -13,26 +13,26 @@
       "staticHosting": {
         "enabled": true,
         "envId": "cloud1-2gavd8kj8a1ce021",
-        "domain": "cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/forgeai/",
+        "domain": "cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/forge/",
         "customDomain": null,
         "cdn": true,
-        "appPath": "/forgeai/"
+        "appPath": "/forge/"
       }
     }
   },
   "backend": {
     "envId": "cloud1-2gavd8kj8a1ce021",
     "cloudFunctions": [
-      {"name": "auth", "status": "deployed", "runtime": "Nodejs20.19", "memorySize": 256, "timeout": 10},
-      {"name": "article-crud", "status": "deployed", "runtime": "Nodejs20.19", "memorySize": 512, "timeout": 10},
-      {"name": "skill-crud", "status": "deployed", "runtime": "Nodejs20.19", "memorySize": 256, "timeout": 10},
-      {"name": "evaluation-crud", "status": "deployed", "runtime": "Nodejs20.19", "memorySize": 256, "timeout": 10},
-      {"name": "section-crud", "status": "deployed", "runtime": "Nodejs20.19", "memorySize": 256, "timeout": 10},
-      {"name": "notification-crud", "status": "deployed", "runtime": "Nodejs20.19", "memorySize": 256, "timeout": 10},
-      {"name": "user-crud", "status": "deployed", "runtime": "Nodejs20.19", "memorySize": 256, "timeout": 10},
-      {"name": "search", "status": "deployed", "runtime": "Nodejs20.19", "memorySize": 256, "timeout": 10},
-      {"name": "file-upload", "status": "deployed", "runtime": "Nodejs20.19", "memorySize": 512, "timeout": 30},
-      {"name": "wechat-sync", "status": "deployed", "runtime": "Nodejs20.19", "memorySize": 256, "timeout": 30}
+      {"name": "forge-auth", "status": "deployed", "runtime": "Nodejs20.19", "memorySize": 256, "timeout": 10},
+      {"name": "forge-article-crud", "status": "deployed", "runtime": "Nodejs20.19", "memorySize": 512, "timeout": 10},
+      {"name": "forge-skill-crud", "status": "deployed", "runtime": "Nodejs20.19", "memorySize": 256, "timeout": 10},
+      {"name": "forge-evaluation-crud", "status": "deployed", "runtime": "Nodejs20.19", "memorySize": 256, "timeout": 10},
+      {"name": "forge-section-crud", "status": "deployed", "runtime": "Nodejs20.19", "memorySize": 256, "timeout": 10},
+      {"name": "forge-notification-crud", "status": "deployed", "runtime": "Nodejs20.19", "memorySize": 256, "timeout": 10},
+      {"name": "forge-user-crud", "status": "deployed", "runtime": "Nodejs20.19", "memorySize": 256, "timeout": 10},
+      {"name": "forge-search", "status": "deployed", "runtime": "Nodejs20.19", "memorySize": 256, "timeout": 10},
+      {"name": "forge-file-upload", "status": "deployed", "runtime": "Nodejs20.19", "memorySize": 512, "timeout": 30},
+      {"name": "forge-wechat-sync", "status": "deployed", "runtime": "Nodejs20.19", "memorySize": 256, "timeout": 30}
     ],
     "cloudRun": [],
     "database": {

@@ -15,7 +15,7 @@ import CodeBlock from '@tiptap/extension-code-block'
 const API = 'https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com'
 
 async function fetchArticle(id: string) {
-  const res = await fetch(`${API}/article-crud`, {
+  const res = await fetch(`${API}/forge-article-crud`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'get', data: { articleId: id } }),
   })
@@ -82,7 +82,7 @@ export default function ArticleDetail() {
             navigator.clipboard.writeText(window.location.href)
           }
         } : undefined}
-        onEdit={canEdit ? () => { window.location.href = `/article/${article._id}/edit` } : undefined}
+        onEdit={canEdit ? () => { window.location.href = `/forge/article/${article._id}/edit` } : undefined}
       />
 
       <main className="flex-1">

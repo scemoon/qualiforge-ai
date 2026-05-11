@@ -3,11 +3,11 @@ import { Outlet, Link, useLocation } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
 
 const navItems = [
-  { path: '/my', label: '我的主页', icon: '🏠' },
-  { path: '/my/articles', label: '我的文章', icon: '📝' },
-  { path: '/my/article/new', label: '发布文章', icon: '✏️' },
-  { path: '/my/collection', label: '我的收藏', icon: '❤️' },
-  { path: '/my/notifications', label: '通知中心', icon: '🔔' },
+  { path: '/forge/my', label: '我的主页', icon: '🏠' },
+  { path: '/forge/my/articles', label: '我的文章', icon: '📝' },
+  { path: '/forge/my/article/new', label: '发布文章', icon: '✏️' },
+  { path: '/forge/my/collection', label: '我的收藏', icon: '❤️' },
+  { path: '/forge/my/notifications', label: '通知中心', icon: '🔔' },
 ]
 
 export default function MyLayout() {
@@ -66,7 +66,7 @@ export default function MyLayout() {
           ))}
         </nav>
         <div className="p-3 border-t border-[#E5E7EB] flex items-center justify-between">
-          <Link to="/" className="text-xs text-[#4F46E5] hover:underline">← 返回主页</Link>
+          <Link to="/forge/" className="text-xs text-[#4F46E5] hover:underline">← 返回主页</Link>
           <button onClick={logout} className="text-xs text-[#9CA3AF] hover:text-[#EF4444]">退出</button>
         </div>
       </aside>
@@ -81,7 +81,7 @@ export default function MyLayout() {
           >
             ☰
           </button>
-          <Link to="/" className="text-sm text-[#4F46E5] hover:underline font-medium">← 返回主页</Link>
+          <Link to="/forge/" className="text-sm text-[#4F46E5] hover:underline font-medium">← 返回主页</Link>
           <div className="w-8" />
         </div>
 
