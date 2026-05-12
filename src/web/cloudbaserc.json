@@ -1,13 +1,18 @@
 {
   "version": "2.0",
   "envId": "cloud1-2gavd8kj8a1ce021",
-  "$schema": "https://framework-1258016615.tcloudbaseapp.com/schema/latest.json",
-  "app": {
-    "serviceName": "forge",
-    "framework": "vite",
-    "installCommand": "npm install",
-    "buildCommand": "npm build",
-    "outputDir": "./dist",
-    "deployPath": "/forge"
+  "framework": {
+    "plugins": {
+      "client": {
+        "use": "@cloudbase/framework-plugin-website",
+        "inputs": {
+          "installCommand": "npm install",
+          "buildCommand": "npm run build",
+          "outputPath": "dist",
+          "cloudPath": "/forge"
+        }
+      }
+    },
+    "name": "forge"
   }
 }
