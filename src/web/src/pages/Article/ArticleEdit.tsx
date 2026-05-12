@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import ArticleEditor from '@/components/common/ArticleEditor'
@@ -30,11 +30,13 @@ async function updateArticle(data: any) {
 export default function ArticleEdit() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const titleInputRef = useRef<HTMLInputElement>(null)
 
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   const [coverImage, setCoverImage] = useState('')
   const [selectedTags, setSelectedTags] = useState<string[]>([])
+  const [tagDropdownOpen, setTagDropdownOpen] = useState(false)
 
   const { data: articleData, isLoading: loadingArticle } = useQuery({
     queryKey: ['article', id],
@@ -67,6 +69,12 @@ export default function ArticleEdit() {
     }
   }, [articleData])
 
+  useEffect(() => {
+    if (!loadingArticle && titleInputRef.current) {
+      titleInputRef.current.focus()
+    }
+  }, [loadingArticle])
+
   const tags = tagsData?.data?.list || []
 
   function toggleTag(tagId: string) {
@@ -91,7 +99,7 @@ export default function ArticleEdit() {
 
   return (
     <div className="max-w-5xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
-      {/* 页面标题 */}
+      {/* 页面标题 + 标题输入 + 标签选择 */}
       <div className="flex items-center gap-3 mb-4 sm:mb-6">
         <Link
           to={`/articles/${id}`}
@@ -100,29 +108,53 @@ export default function ArticleEdit() {
         >
           ←
         </Link>
-        <h1 className="text-xl sm:text-2xl font-bold text-[#111827]">编辑文章</h1>
+        <input
+          ref={titleInputRef}
+          type="text"
+          value={title}
+          onChange={e => setTitle(e.target.value)}
+          className="flex-1 border-b-2 border-[#E5E7EB] focus:border-[#4F46E5] bg-transparent text-xl sm:text-2xl font-bold text-[#111827] focus:outline-none transition px-1"
+          placeholder="输入文章标题"
+          required
+        />
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setTagDropdownOpen(!tagDropdownOpen)}
+            className="px-3 py-1.5 border border-[#E5E7EB] rounded-md text-sm text-[#4B5563] hover:bg-[#F9FAFB] transition flex items-center gap-1"
+          >
+            标签 {selectedTags.length > 0 && `(${selectedTags.length})`}
+            <span className="text-xs">▼</span>
+          </button>
+          {tagDropdownOpen && (
+            <div className="absolute right-0 top-full mt-1 w-48 bg-white border border-[#E5E7EB] rounded-lg shadow-lg z-10 max-h-60 overflow-y-auto">
+              {tags.length === 0 ? (
+                <div className="px-3 py-2 text-sm text-[#9CA3AF]">暂无标签</div>
+              ) : (
+                tags.map((tag: any) => (
+                  <button
+                    key={tag._id}
+                    type="button"
+                    onClick={() => toggleTag(tag._id)}
+                    className="w-full px-3 py-2 text-left text-sm hover:bg-[#F9FAFB] flex items-center justify-between"
+                  >
+                    <span>{tag.name}</span>
+                    {selectedTags.includes(tag._id) && <span className="text-[#4F46E5]">✓</span>}
+                  </button>
+                ))
+              )}
+            </div>
+          )}
+        </div>
         <Link
           to={`/articles/${id}`}
-          className="ml-auto text-xs sm:text-sm text-[#4F46E5] hover:underline whitespace-nowrap"
+          className="text-xs sm:text-sm text-[#4F46E5] hover:underline whitespace-nowrap"
         >
           返回详情
         </Link>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
-        {/* 标题 */}
-        <div>
-          <label className="block text-sm font-medium text-[#4B5563] mb-1.5">文章标题 <span className="text-red-500">*</span></label>
-          <input
-            type="text"
-            value={title}
-            onChange={e => setTitle(e.target.value)}
-            className="w-full border border-[#E5E7EB] rounded-lg px-3 sm:px-4 py-2.5 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-[#4F46E5] focus:border-transparent transition"
-            placeholder="输入文章标题"
-            required
-          />
-        </div>
-
         {/* 封面图 */}
         <div>
           <label className="block text-sm font-medium text-[#4B5563] mb-1.5">封面图 URL <span className="text-[#9CA3AF] font-normal">(可选)</span></label>
@@ -138,29 +170,6 @@ export default function ArticleEdit() {
               <img src={coverImage} alt="封面预览" className="w-full h-full object-cover" onError={e => (e.currentTarget.style.display = 'none')} />
             </div>
           )}
-        </div>
-
-        {/* 标签 */}
-        <div>
-          <label className="block text-sm font-medium text-[#4B5563] mb-1.5">标签 <span className="text-[#9CA3AF] font-normal">(可选)</span></label>
-          <div className="flex flex-wrap gap-1.5 sm:gap-2">
-            {tags.map((tag: any) => (
-              <button
-                key={tag._id}
-                type="button"
-                onClick={() => toggleTag(tag._id)}
-                className={`
-                  px-2.5 sm:px-3 py-1 rounded-full text-xs sm:text-sm border transition
-                  ${selectedTags.includes(tag._id)
-                    ? 'bg-[#4F46E5] text-white border-[#4F46E5]'
-                    : 'bg-white text-[#4B5563] border-[#E5E7EB] hover:border-[#4F46E5]'
-                  }
-                `}
-              >
-                {tag.name}
-              </button>
-            ))}
-          </div>
         </div>
 
         {/* 富文本编辑器 */}

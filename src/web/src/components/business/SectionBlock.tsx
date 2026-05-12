@@ -18,7 +18,7 @@ interface SectionProps {
 export default function SectionBlock({ section, selectedTag = null, currentPage = 0, onPageChange }: SectionProps) {
   const articles = section.articles || []
   const evaluations = section.evaluations || []
-  const limit = section.config?.limit || 8
+  const limit = section.config?.pageSize || 10
 
   // Filter articles by selected tag
   const filteredArticles = selectedTag
