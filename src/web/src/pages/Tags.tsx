@@ -28,7 +28,7 @@ export default function Tags() {
           {tags.map((tag: any) => (
             <Link
               key={tag._id}
-              to={`/forge/article/search?tag=${tag._id}`}
+              to={`/forge/articles/search?tag=${tag._id}`}
               className="bg-white rounded-lg border border-[#E5E7EB] p-4 hover:border-[#4F46E5] hover:shadow transition text-center"
             >
               <span className="text-lg font-medium text-[#111827] block">{tag.name}</span>

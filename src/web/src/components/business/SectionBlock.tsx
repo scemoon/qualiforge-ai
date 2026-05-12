@@ -49,7 +49,7 @@ export default function SectionBlock({ section, selectedTag = null, currentPage 
           return (
             <Link
               key={article._id}
-              to={`/forge/article/${article._id}`}
+              to={`/forge/articles/${article._id}`}
               className="group block bg-white rounded-xl border border-[#E5E7EB] p-4 hover:border-indigo-300 hover:shadow-md transition-all"
             >
               <div className="flex gap-4">
@@ -209,7 +209,7 @@ export default function SectionBlock({ section, selectedTag = null, currentPage 
             </div>
             <div className="col-span-3 text-right">
               <Link
-                to={`/forge/article/${ev.articleId || ev._id}`}
+                to={`/forge/articles/${ev.articleId || ev._id}`}
                 className="inline-flex items-center gap-1 text-sm text-indigo-600 hover:text-indigo-800 font-medium"
               >
                 查看详情

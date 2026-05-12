@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import PublicLayout from './components/layout/PublicLayout'
+import ArticleLayout from './components/layout/ArticleLayout'
 import AdminLayout from './components/layout/AdminLayout'
 import MyLayout from './components/layout/MyLayout'
 import { useAuthStore } from './store/authStore'
@@ -38,23 +39,22 @@ function RequireAdmin({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <Routes>
-      <Route path="/forge/" element={<Home />} />
-      <Route path="/forge/article">
-        <Route path="search" element={<Search />} />
-        <Route path=':id' element={<ArticleDetail />}></Route>
-        <Route path="new" element={<RequireAuth><ArticleNew /></RequireAuth>} />
-        <Route path=":id/edit" element={<RequireAuth><ArticleEdit /></RequireAuth>} />
-      </Route>
-
       <Route element={<PublicLayout />}>
+        <Route path="/forge/" element={<Home />} />
         <Route path="/forge/tags" element={<Tags />} />
         <Route path="/forge/expert/:id" element={<ExpertProfile />} />
         <Route path="/forge/login" element={<Login />} />
         <Route path="/forge/register" element={<Register />} />
       </Route>
 
-      {/* Article edit pages — standalone full-width (no sidebar) */}
-      
+      <Route element={<ArticleLayout />}>
+        <Route path="/forge/articles">
+          <Route path="search" element={<Search />} />
+          <Route path=":id" element={<ArticleDetail />} />
+          <Route path="new" element={<RequireAuth><ArticleNew /></RequireAuth>} />
+          <Route path=":id/edit" element={<RequireAuth><ArticleEdit /></RequireAuth>} />
+        </Route>
+      </Route>
 
       {/* Expert Center — sidebar layout */}
       <Route path="/forge/my" element={<RequireAuth><MyLayout /></RequireAuth>}>

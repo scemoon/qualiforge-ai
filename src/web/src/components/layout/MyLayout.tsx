@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { Outlet, Link, useLocation } from 'react-router-dom'
-import { useAuthStore } from '../../store/authStore'
+import { useAuthStore } from '@/store/authStore.ts'
 
 const navItems = [
   { path: '/forge/my', label: '我的主页', icon: '🏠' },
   { path: '/forge/my/articles', label: '我的文章', icon: '📝' },
-  { path: '/forge/my/article/new', label: '发布文章', icon: '✏️' },
+  { path: '/forge/my/articles/new', label: '发布文章', icon: '✏️' },
   { path: '/forge/my/collection', label: '我的收藏', icon: '❤️' },
   { path: '/forge/my/notifications', label: '通知中心', icon: '🔔' },
 ]

@@ -73,7 +73,7 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-3">
-                QualiForge <span className="text-indigo-400">AI</span>
+                Forge <span className="text-indigo-400">AI</span>
               </h1>
               <p className="text-white/60 text-sm sm:text-base max-w-xl hidden sm:block">
                让每一行 AI 生成代码都可信

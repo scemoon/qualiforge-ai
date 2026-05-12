@@ -12,7 +12,7 @@ export default function NotFound() {
         </p>
         <div className="space-x-4">
           <Link
-            to="/"
+            to="/forge"
             className="inline-block px-6 py-3 bg-[#4F46E5] text-white rounded-md hover:bg-[#4338CA] transition"
           >
             返回首页

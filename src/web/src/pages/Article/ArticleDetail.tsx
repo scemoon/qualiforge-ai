@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { marked } from 'marked'
 import DOMPurify from 'dompurify'
 import dayjs from 'dayjs'
-import { useAuthStore } from '../../store/authStore'
+import { useAuthStore } from '@/store/authStore.ts'
 import { generateHTML } from '@tiptap/html'
 import StarterKit from '@tiptap/starter-kit'
 import TaskList from '@tiptap/extension-task-list'
@@ -82,7 +82,7 @@ export default function ArticleDetail() {
             navigator.clipboard.writeText(window.location.href)
           }
         } : undefined}
-        onEdit={canEdit ? () => { window.location.href = `/forge/article/${article._id}/edit` } : undefined}
+        onEdit={canEdit ? () => { window.location.href = `/forge/articles/${article._id}/edit` } : undefined}
       />
 
       <main className="flex-1">
@@ -119,7 +119,7 @@ export default function ArticleDetail() {
       </main>
 
       <footer className="py-4 text-center text-xs text-[#9CA3AF] border-t border-[#E5E7EB] bg-white">
-        © 2026 QualiForge AI — AI Coding 质量保障社区
+        © 2026 Forge AI — AI Coding 社区
       </footer>
     </div>
   )
@@ -138,7 +138,7 @@ function DetailHeader({
     <header className="sticky top-0 z-50 bg-white border-b border-[#E5E7EB]">
       <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
         <div className="flex items-center gap-2 min-w-0 flex-1">
-          <Link to="/" className="text-[#4B5563] hover:text-[#111827] text-xl leading-none flex-shrink-0">←</Link>
+          <Link to="/forge" className="text-[#4B5563] hover:text-[#111827] text-xl leading-none flex-shrink-0">←</Link>
           <span className="text-sm text-[#111827] truncate">{title}</span>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
