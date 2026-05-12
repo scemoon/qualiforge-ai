@@ -83,14 +83,14 @@ export default function Home() {
               <div className="flex items-center gap-3">
                 <span className="text-white/80 text-sm hidden sm:inline">{user?.nickname || user?.email}</span>
                 {user?.role === 'admin' ? (
-                  <Link to="/forge/admin" className="px-4 py-2 bg-[#F59E0B] text-white rounded-lg font-semibold text-sm hover:bg-[#D97706] transition">管理后台</Link>
+                  <Link to="/admin" className="px-4 py-2 bg-[#F59E0B] text-white rounded-lg font-semibold text-sm hover:bg-[#D97706] transition">管理后台</Link>
                 ) : (
-                  <Link to="/forge/my" className="px-4 py-2 bg-[#4F46E5] text-white rounded-lg font-semibold text-sm hover:bg-[#4338CA] transition">专家中心</Link>
+                  <Link to="/my" className="px-4 py-2 bg-[#4F46E5] text-white rounded-lg font-semibold text-sm hover:bg-[#4338CA] transition">专家中心</Link>
                 )}
                 <button onClick={logout} className="px-4 py-2 border border-white/30 text-white/80 rounded-lg text-sm hover:bg-white/10 transition">退出</button>
               </div>
             ) : (
-              <Link to="/forge/login" className="flex-shrink-0 px-4 sm:px-5 py-2 sm:py-2.5 bg-white text-[#4F46E5] rounded-lg font-semibold text-sm hover:bg-indigo-50 transition w-full sm:w-auto text-center">
+              <Link to="/login" className="flex-shrink-0 px-4 sm:px-5 py-2 sm:py-2.5 bg-white text-[#4F46E5] rounded-lg font-semibold text-sm hover:bg-indigo-50 transition w-full sm:w-auto text-center">
                 登录
               </Link>
             )}

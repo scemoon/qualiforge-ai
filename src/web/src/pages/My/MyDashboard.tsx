@@ -25,26 +25,26 @@ export default function MyDashboard() {
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-        <Link to="/forge/my/articles/new" className="bg-white rounded-lg border border-[#E5E7EB] p-4 text-center hover:border-[#4F46E5] transition">
+        <Link to="/my/articles/new" className="bg-white rounded-lg border border-[#E5E7EB] p-4 text-center hover:border-[#4F46E5] transition">
           <span className="text-2xl">✏️</span>
           <p className="text-sm font-medium text-[#111827] mt-2">发布文章</p>
         </Link>
-        <Link to="/forge/my/articles" className="bg-white rounded-lg border border-[#E5E7EB] p-4 text-center hover:border-[#4F46E5] transition">
+        <Link to="/my/articles" className="bg-white rounded-lg border border-[#E5E7EB] p-4 text-center hover:border-[#4F46E5] transition">
           <span className="text-2xl">📝</span>
           <p className="text-sm font-medium text-[#111827] mt-2">我的文章</p>
         </Link>
-        <Link to="/forge/my/collection" className="bg-white rounded-lg border border-[#E5E7EB] p-4 text-center hover:border-[#4F46E5] transition">
+        <Link to="/my/collection" className="bg-white rounded-lg border border-[#E5E7EB] p-4 text-center hover:border-[#4F46E5] transition">
           <span className="text-2xl">❤️</span>
           <p className="text-sm font-medium text-[#111827] mt-2">我的收藏</p>
         </Link>
-        <Link to="/forge/my/notifications" className="bg-white rounded-lg border border-[#E5E7EB] p-4 text-center hover:border-[#4F46E5] transition">
+        <Link to="/my/notifications" className="bg-white rounded-lg border border-[#E5E7EB] p-4 text-center hover:border-[#4F46E5] transition">
           <span className="text-2xl">🔔</span>
           <p className="text-sm font-medium text-[#111827] mt-2">通知中心</p>
         </Link>
-        <a href="/" className="bg-white rounded-lg border border-[#E5E7EB] p-4 text-center hover:border-[#4F46E5] transition">
+        <Link to="/" className="bg-white rounded-lg border border-[#E5E7EB] p-4 text-center hover:border-[#4F46E5] transition">
           <span className="text-2xl">📚</span>
           <p className="text-sm font-medium text-[#111827] mt-2">浏览文章</p>
-        </a>
+        </Link>
       </div>
     </ResponsiveContainer>
   )

@@ -33,7 +33,7 @@ export default function ArticleNew() {
     onSuccess: (data) => {
       if (data.code === 0) {
         alert('文章已提交，等待管理员审核！')
-        navigate('/forge/my')
+        navigate('/my')
       } else {
         alert(data.message || '提交失败')
       }

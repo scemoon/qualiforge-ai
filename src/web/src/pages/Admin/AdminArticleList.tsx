@@ -257,7 +257,7 @@ export default function AdminArticleList() {
             <option value="rejected">已驳回</option>
           </select>
           <Link 
-            to="/forge/admin/articles/new" 
+            to="/admin/official"
             className="flex-1 sm:flex-initial px-4 py-2 bg-[#4F46E5] text-white rounded-md text-sm hover:bg-[#4338CA] transition text-center"
           >
             新建文章

@@ -26,7 +26,7 @@ export default function Login() {
         return
       }
       login(data.data.user, data.data.token)
-      navigate('/forge/')
+      navigate('/')
     } catch (err: any) {
       setError(err.message || '网络错误')
     } finally {
@@ -71,7 +71,7 @@ export default function Login() {
           </button>
         </form>
         <p className="mt-4 text-center text-sm text-[#4B5563]">
-          还没有账号？<Link to="/forge/register" className="text-[#4F46E5] hover:underline">注册专家</Link>
+          还没有账号？<Link to="/register" className="text-[#4F46E5] hover:underline">注册专家</Link>
         </p>
       </div>
     </div>

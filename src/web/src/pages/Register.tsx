@@ -58,7 +58,7 @@ export default function Register() {
         const data = await res.json()
         if (data.code !== 0) { setError(data.message || '注册失败'); setLoading(false); return }
         login(data.data.user, data.data.token)
-        navigate('/forge/')
+        navigate('/')
       } else {
         if (form.password.length < 8) { setError('密码长度至少 8 位'); setLoading(false); return }
         const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/api/forge/auth', {
@@ -74,7 +74,7 @@ export default function Register() {
         })
         const loginData = await loginRes.json()
         if (loginData.code === 0) login(loginData.data.user, loginData.data.token)
-        navigate('/forge/')
+        navigate('/')
       }
     } catch (err: any) {
       setError(err.message || '网络错误')
@@ -189,7 +189,7 @@ export default function Register() {
         </form>
 
         <p className="mt-4 text-center text-sm text-[#4B5563]">
-          已有账号？<Link to="/forge/login" className="text-[#4F46E5] hover:underline">直接登录</Link>
+          已有账号？<Link to="/login" className="text-[#4F46E5] hover:underline">直接登录</Link>
         </p>
       </div>
     </div>

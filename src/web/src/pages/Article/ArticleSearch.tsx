@@ -97,7 +97,7 @@ export default function Search() {
         ) : (
           <div className="space-y-3">
             {data?.articles.map((article: any) => (
-              <Link key={article._id} to={`/forge/articles/${article._id}`} className="block bg-white rounded-lg border border-[#E5E7EB] p-4 hover:shadow-md transition">
+              <Link key={article._id} to={`/articles/${article._id}`} className="block bg-white rounded-lg border border-[#E5E7EB] p-4 hover:shadow-md transition">
                 <h3 className="font-medium text-[#111827] mb-2 line-clamp-2">{article.title}</h3>
                 <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-[#9CA3AF]">
                   <span>{article.author?.nickname}</span>

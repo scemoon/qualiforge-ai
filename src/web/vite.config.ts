@@ -3,7 +3,14 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: '/forge/',  // ← 改成子目录的绝对路径（注意前后斜杠）
+  base: '/forge/',
+  css: {
+    preprocessorOptions: {
+      scss: {
+        api: 'modern-compiler',
+      },
+    },
+  },
   build: {
     outDir: 'dist',
     // emptyOutDir: true,

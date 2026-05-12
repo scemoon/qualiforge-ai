@@ -55,14 +55,14 @@ export default function ArticleDetail() {
 
   if (isLoading) return (
     <div className="min-h-screen bg-[#F9FAFB] flex flex-col">
-      <DetailHeader title="" onShare={undefined} onEdit={undefined} />
+      <DetailHeader title="" onShare={undefined}  />
       <div className="flex-1 flex items-center justify-center text-[#9CA3AF]">加载中...</div>
     </div>
   )
 
   if (error || !data?.data) return (
     <div className="min-h-screen bg-[#F9FAFB] flex flex-col">
-      <DetailHeader title="" onShare={undefined} onEdit={undefined} />
+      <DetailHeader title="" onShare={undefined}  />
       <div className="flex-1 flex items-center justify-center text-[#EF4444]">文章不存在</div>
     </div>
   )
@@ -82,7 +82,7 @@ export default function ArticleDetail() {
             navigator.clipboard.writeText(window.location.href)
           }
         } : undefined}
-        onEdit={canEdit ? () => { window.location.href = `/forge/articles/${article._id}/edit` } : undefined}
+        editTo={canEdit ? `/articles/${article._id}/edit` : undefined}
       />
 
       <main className="flex-1">
@@ -128,25 +128,25 @@ export default function ArticleDetail() {
 function DetailHeader({
   title,
   onShare,
-  onEdit,
+  editTo,
 }: {
   title: string
   onShare?: () => void
-  onEdit?: () => void
+  editTo?: string
 }) {
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-[#E5E7EB]">
       <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
         <div className="flex items-center gap-2 min-w-0 flex-1">
-          <Link to="/forge" className="text-[#4B5563] hover:text-[#111827] text-xl leading-none flex-shrink-0">←</Link>
+          <Link to="/" className="text-[#4B5563] hover:text-[#111827] text-xl leading-none flex-shrink-0">←</Link>
           <span className="text-sm text-[#111827] truncate">{title}</span>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
           {onShare && (
             <button onClick={onShare} className="px-3 py-1.5 border border-[#E5E7EB] rounded-md text-sm text-[#4B5563] hover:bg-[#F9FAFB] transition">分享</button>
           )}
-          {onEdit && (
-            <button onClick={onEdit} className="px-3 py-1.5 bg-[#4F46E5] text-white rounded-md text-sm hover:bg-[#4338CA] transition">编辑</button>
+          {editTo && (
+            <Link to={editTo} className="px-3 py-1.5 bg-[#4F46E5] text-white rounded-md text-sm hover:bg-[#4338CA] transition">编辑</Link>
           )}
         </div>
       </div>
