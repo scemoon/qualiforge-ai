@@ -115,7 +115,7 @@ export default function MyArticleList() {
 
               <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-[#4B5563]">
                 <Link to={`/forge/articles/${article._id}`} className="text-[#4F46E5] hover:underline">查看</Link>
-                <Link to={`/forge/article/${article._id}/edit`} className="text-[#4F46E5] hover:underline">编辑</Link>
+                <Link to={`/forge/articles/${article._id}/edit`} className="text-[#4F46E5] hover:underline">编辑</Link>
                 <button
                   type="button"
                   className="text-[#EF4444] hover:underline"
