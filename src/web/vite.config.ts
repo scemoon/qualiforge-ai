@@ -13,15 +13,15 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    // emptyOutDir: true,
-    // rollupOptions: {
-    //   output: {
-    //     // 内容哈希作为版本号，确保 CDN 缓存失效
-    //     assetFileNames: 'assets/[name]-[hash][extname]',
-    //     chunkFileNames: 'assets/[name]-[hash].js',
-    //     entryFileNames: "assets/[name]-v2-[hash].js",
-    //   },
-    // },
+    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules/react-dom') || id.includes('node_modules/react/') || id.includes('node_modules/react-router')) return 'vendor'
+          if (id.includes('node_modules/@tiptap')) return 'tiptap'
+        },
+      },
+    },
   },
   resolve: {
     alias: {

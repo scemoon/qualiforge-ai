@@ -62,7 +62,7 @@ import { useIsBreakpoint } from '@/hooks/use-is-breakpoint'
 import { useWindowSize } from '@/hooks/use-window-size'
 import { useCursorVisibility } from '@/hooks/use-cursor-visibility'
 
-import { ThemeToggle } from '@/components/tiptap-templates/simple/theme-toggle'
+// import { ThemeToggle } from '@/components/tiptap-templates/simple/theme-toggle'
 import { handleImageUpload, MAX_FILE_SIZE } from '@/lib/tiptap-utils'
 
 import '@/components/tiptap-templates/simple/simple-editor.scss'
@@ -145,9 +145,9 @@ const MainToolbarContent = ({
 
       {isMobile && <ToolbarSeparator />}
 
-      <ToolbarGroup>
-        <ThemeToggle />
-      </ToolbarGroup>
+      {/*<ToolbarGroup>*/}
+      {/*  <ThemeToggle />*/}
+      {/*</ToolbarGroup>*/}
     </>
   )
 }
@@ -189,9 +189,7 @@ export default function ArticleEditor({
   const isMobile = useIsBreakpoint()
   const { height } = useWindowSize()
   const [mobileView, setMobileView] = useState<'main' | 'highlighter' | 'link'>('main')
-  const [isFullscreen, setIsFullscreen] = useState(false)
-  const [charCount, setCharCount] = useState(0)
-  const [wordCount, setWordCount] = useState(0)
+  // const [isFullscreen, setIsFullscreen] = useState(false)
   const toolbarRef = useRef<HTMLDivElement>(null)
 
   const editor = useEditor({
@@ -238,14 +236,10 @@ export default function ArticleEditor({
     onUpdate: ({ editor }) => {
       const md = editor.getMarkdown()
       onChange(md)
-      setCharCount(md.length)
-      setWordCount(editor.getText().split(/\s+/).filter(Boolean).length)
     },
-    onCreate: ({ editor }) => {
-      const md = editor.getMarkdown()
-      setCharCount(md.length)
-      setWordCount(editor.getText().split(/\s+/).filter(Boolean).length)
-    },
+    // onCreate: ({ editor }) => {
+    //   const md = editor.getMarkdown()
+    // },
   })
 
   const rect = useCursorVisibility({
@@ -268,80 +262,6 @@ export default function ArticleEditor({
 
   if (!editor) return null
 
-  const toggleFullscreen = () => setIsFullscreen(f => !f)
-
-  const StatusBar = () => (
-    <div className="flex items-center justify-between px-3 py-1.5 border-t border-[#E5E7EB] bg-[#FAFAFA] text-xs text-[#9CA3AF]">
-      <div className="flex items-center gap-3">
-        <span>{charCount} 字</span>
-        <span className="hidden sm:inline">{wordCount} 词</span>
-      </div>
-      <button
-        type="button"
-        onClick={toggleFullscreen}
-        className="flex items-center gap-1 hover:text-[#4F46E5] transition-colors"
-      >
-        <span>⛶</span>
-        <span className="hidden sm:inline">全屏编辑</span>
-      </button>
-    </div>
-  )
-
-  // 全屏模式
-  if (isFullscreen) {
-    return (
-      <div className="fixed inset-0 z-[9999] bg-white flex flex-col">
-        {/* 全屏顶部栏 */}
-        <div className="flex items-center justify-between px-4 py-2.5 border-b border-[#E5E7EB] bg-white">
-          <div className="flex items-center gap-3">
-            <h2 className="text-sm font-semibold text-[#111827]">富文本编辑器</h2>
-            <span className="text-xs text-[#9CA3AF]">{charCount} 字 · {wordCount} 词</span>
-          </div>
-          <button
-            onClick={toggleFullscreen}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-sm border border-[#E5E7EB] rounded-md hover:bg-[#F9FAFB] text-[#4B5563] transition"
-          >
-            <span>✕</span>
-            <span>退出全屏</span>
-          </button>
-        </div>
-
-        {/* 全屏工具栏 */}
-        <div className="flex items-center gap-0.5 px-3 py-2 border-b border-[#E5E7EB] bg-[#FAFAFA] overflow-x-auto">
-          <EditorContext.Provider value={{ editor }}>
-            <MainToolbarContent
-              onHighlighterClick={() => {}}
-              onLinkClick={() => {}}
-              isMobile={false}
-            />
-          </EditorContext.Provider>
-        </div>
-
-        {/* 全屏编辑器区域 */}
-        <div className="flex-1 overflow-y-auto">
-          <div className="max-w-4xl mx-auto px-4 py-6">
-            <EditorContext.Provider value={{ editor }}>
-              <EditorContent editor={editor} className="simple-editor-content" />
-            </EditorContext.Provider>
-          </div>
-        </div>
-
-        {/* 全屏底部状态栏 */}
-        <div className="flex items-center justify-between px-4 py-2 border-t border-[#E5E7EB] bg-[#FAFAFA]">
-          <div className="flex items-center gap-3 text-xs text-[#9CA3AF]">
-            <span>{charCount} 字</span>
-            <span>{wordCount} 词</span>
-          </div>
-          <button
-            onClick={toggleFullscreen}
-            className="text-xs text-[#9CA3AF] hover:text-[#EF4444] transition"
-          >
-            退出全屏
-          </button>
-        </div>
-      </div>
-    )
-  }
 
   // 普通模式
   return (
@@ -377,7 +297,6 @@ export default function ArticleEditor({
           className="simple-editor-content"
         />
       </EditorContext.Provider>
-      <StatusBar />
     </div>
   )
 }
