@@ -55,8 +55,8 @@ body,
 }
 
 .simple-editor-wrapper {
-  height: 100vh;
-  //overflow: auto;
+  height: 100%;
+  overflow-y: auto;
 }
 
 .simple-editor-content {

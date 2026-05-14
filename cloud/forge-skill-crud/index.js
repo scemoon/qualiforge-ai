@@ -31,7 +31,8 @@ exports.main = async (event, context) => {
     const rawBody = typeof event.body === 'string' ? JSON.parse(event.body) : event.body; const { action, data = {} } = rawBody || event
     const db = getDb()
     const ctx = getCloudbaseContext(context)
-    const OPENID = ctx.OPENID || ctx.userId || ''
+    const ctxUserId = ctx.USER_ID || ctx.userId || ''
+    const USER_ID = data.token || ctxUserId
 
     // List all skills (public)
     if (action === 'list') {
@@ -51,7 +52,7 @@ exports.main = async (event, context) => {
 
     // Create skill (admin only)
     if (action === 'create') {
-      if (!OPENID) return respond(401, '请先登录')
+      if (!USER_ID) return respond(401, '请先登录')
       // TODO: check admin role
 
       const { name, description, icon, color } = data
@@ -74,7 +75,7 @@ exports.main = async (event, context) => {
 
     // Update skill
     if (action === 'update') {
-      if (!OPENID) return respond(401, '请先登录')
+      if (!USER_ID) return respond(401, '请先登录')
       const { skillId, name, description, icon, color, enabled } = data
 
       const updateData = {}
@@ -90,7 +91,7 @@ exports.main = async (event, context) => {
 
     // Delete skill
     if (action === 'delete') {
-      if (!OPENID) return respond(401, '请先登录')
+      if (!USER_ID) return respond(401, '请先登录')
       const { skillId } = data
       await db.collection('skills').where({ _id: skillId }).remove()
       return respond(0, '删除成功')

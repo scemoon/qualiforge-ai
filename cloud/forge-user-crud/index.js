@@ -4,7 +4,6 @@
  */
 const cloudbase = require('@cloudbase/node-sdk')
 const { getCloudbaseContext } = require('@cloudbase/node-sdk')
-const { getCloudbaseContext } = require('@cloudbase/node-sdk')
 const HEADERS = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type, Authorization', 'Content-Type': 'application/json' }
 
 function respond(code, message, data = null) { return { code, message, data } }
@@ -17,9 +16,10 @@ exports.main = async (event, context) => {
     const rawBody = typeof event.body === 'string' ? JSON.parse(event.body) : event.body; const { action, data = {} } = rawBody || event
     const db = getDb()
     const ctx = getCloudbaseContext(context)
-    const OPENID = ctx.OPENID || ctx.userId || ''
+    const ctxUserId = ctx.USER_ID || ctx.userId || ''
+    const USER_ID = data.token || ctxUserId
 
-    if (!OPENID) return respond(401, '请先登录')
+    if (!USER_ID) return respond(401, '请先登录')
     // TODO: check admin role
 
     if (action === 'list') {

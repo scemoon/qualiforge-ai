@@ -22,10 +22,11 @@ exports.main = async (event, context) => {
 
     // Auth context
     const ctx = getCloudbaseContext(context)
-    const OPENID = ctx.OPENID || ctx.userId || null
-    const assertAuth = () => { if (!OPENID) throw new Error('请先登录') }
+    const ctxUserId = ctx.USER_ID || ctx.userId || null
+    const USER_ID = reqData.token || ctxUserId
+    const assertAuth = () => { if (!USER_ID) throw new Error('请先登录') }
 
-    // ========== list ==========
+    // ========== list (public) ==========
     if (action === 'list') {
       const list = await db.collection('sections')
         .where({ 'data.visibility': 'public', 'data.enabled': true })
@@ -106,6 +107,17 @@ exports.main = async (event, context) => {
       const filtered = enriched.filter(s => s && !seen.has(s._id) && (seen.add(s._id), true))
 
       return respond(0, 'success', { list: filtered })
+    }
+
+    // ========== listAll (admin - all sections regardless of enabled) ==========
+    if (action === 'listAll') {
+      assertAuth()
+      const list = await db.collection('sections')
+        .where({ 'data.visibility': 'public' })
+        .orderBy('data.order', 'asc')
+        .get()
+
+      return respond(0, 'success', { list: list.data })
     }
 
     // ========== get ==========

@@ -2,28 +2,17 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
 import ResponsiveContainer from '../../components/common/ResponsiveContainer'
+import { apiRequest } from '../../lib/api-client'
 
-const API_BASE = 'https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/api/forge'
+dayjs.extend(relativeTime)
 
 async function searchAll(keyword: string) {
-  const [articlesRes, skillsRes] = await Promise.all([
-    fetch(`${API_BASE}/article-crud`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'search', data: { keyword } }),
-    }),
-    fetch(`${API_BASE}/skill-crud`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'search', data: { keyword } }),
-    }),
-  ])
-  const articlesData = await articlesRes.json()
-  const skillsData = await skillsRes.json()
+  const result = await apiRequest({ action: 'search', data: { keyword }, endpoint: 'search' })
   return {
-    articles: articlesData?.data?.list || [],
-    skills: skillsData?.data?.list || [],
+    articles: result?.data?.articles || [],
+    skills: result?.data?.skills || [],
   }
 }
 

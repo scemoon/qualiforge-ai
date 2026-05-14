@@ -2,23 +2,14 @@ import { useParams, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import ResponsiveContainer from '../components/common/ResponsiveContainer'
+import { apiRequest } from '../lib/api-client'
 
 async function fetchExpertProfile(userId: string) {
-  const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/api/forge/user-crud', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: 'get', data: { userId } }),
-  })
-  return res.json()
+  return apiRequest({ action: 'get', data: { userId }, endpoint: 'userCrud' })
 }
 
 async function fetchExpertArticles(userId: string) {
-  const res = await fetch('https://cloud1-2gavd8kj8a1ce021.service.tcloudbase.com/api/forge/article-crud', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: 'list', data: { authorId: userId } }),
-  })
-  return res.json()
+  return apiRequest({ action: 'list', data: { authorId: userId }, endpoint: 'articleCrud' })
 }
 
 export default function ExpertProfile() {
@@ -48,6 +39,9 @@ export default function ExpertProfile() {
     </ResponsiveContainer>
   )
 
+  const userRole = user?.role ?? ''
+  const displayName = user?.nickname ?? '未知用户'
+
   return (
     <ResponsiveContainer className="py-6 md:py-8">
       {/* Profile header */}
@@ -59,11 +53,11 @@ export default function ExpertProfile() {
           </div>
           {/* Info */}
           <div className="flex-1 min-w-0">
-            <h1 className="text-xl sm:text-2xl font-bold text-[#111827] mb-1">{user.nickname}</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-[#111827] mb-1">{displayName}</h1>
             <p className="text-sm text-[#9CA3AF] mb-2">{user.email}</p>
             <div className="flex flex-wrap items-center gap-2">
-              <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${user.role === 'admin' ? 'bg-[#FEF3C7] text-[#D97706]' : 'bg-[#DBEAFE] text-[#2563EB]'}`}>
-                {user.role === 'admin' ? '管理员' : '专家'}
+              <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${userRole === 'admin' ? 'bg-[#FEF3C7] text-[#D97706]' : 'bg-[#DBEAFE] text-[#2563EB]'}`}>
+                {userRole === 'admin' ? '管理员' : '专家'}
               </span>
               <span className="text-xs text-[#9CA3AF]">加入于 {dayjs(user.createdAt).format('YYYY-MM-DD')}</span>
             </div>

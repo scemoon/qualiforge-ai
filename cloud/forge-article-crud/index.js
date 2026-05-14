@@ -30,43 +30,72 @@ exports.main = async (event, context) => {
   }
 
   try {
-    const rawBody = typeof event.body === 'string' ? JSON.parse(event.body) : event.body; const { action, data = {} } = rawBody || event
+    const rawBody = typeof event.body === 'string' ? JSON.parse(event.body) : event.body
+    const { action, data = {} } = rawBody || event
     const db = getDb()
     const ctx = getCloudbaseContext(context)
-    const OPENID = ctx.OPENID || ctx.userId || ''
+    const ctxUserId = ctx.OPENID || ctx.userId || ''
+    const USER_ID = data.token || ctxUserId
 
     // ---------- list articles (public) ----------
     if (action === 'list') {
       const { page = 1, pageSize = 20, tagId, keyword, status = 'approved' } = data
       const skip = (page - 1) * pageSize
 
-      let query = { status }
-      if (keyword) {
-        query['data.title'] = new RegExp(keyword, 'i')
-      }
-
+      let countObj = { total: 0 }
       let listResult
+
       if (tagId) {
         const tagRefs = await db.collection('article_tags').where({ tagId }).field({ articleId: true }).get()
         const articleIds = tagRefs.data.map(function (r) { return r.articleId })
         if (articleIds.length === 0) {
           return respond(0, 'success', { list: [], total: 0 })
         }
-        query['data._id'] = db.command.in(articleIds)
+        const tagQuery = db.command.and(
+          db.command.or(
+            { _id: db.command.in(articleIds) },
+            { 'data._id': db.command.in(articleIds) }
+          ),
+          db.command.or(
+            { status: status },
+            { 'data.status': status }
+          )
+        )
+        countObj = await db.collection('articles').where(tagQuery).count()
+        listResult = await db.collection('articles')
+          .where(tagQuery)
+          .orderBy('data.createdAt', 'desc')
+          .skip(skip)
+          .limit(pageSize)
+          .get()
+      } else {
+        const keywordQuery = keyword
+          ? db.command.or(
+              { title: new RegExp(keyword, 'i') },
+              { 'data.title': new RegExp(keyword, 'i') }
+            )
+          : {}
+        const baseQuery = db.command.and(
+          db.command.or(
+            { status: status },
+            { 'data.status': status }
+          ),
+          keywordQuery
+        )
+        countObj = await db.collection('articles').where(baseQuery).count()
+        listResult = await db.collection('articles')
+          .where(baseQuery)
+          .orderBy('data.createdAt', 'desc')
+          .skip(skip)
+          .limit(pageSize)
+          .get()
       }
-
-      const countResult = await db.collection('articles').where(query).count()
-      listResult = await db.collection('articles')
-        .where(query)
-        .orderBy('data.createdAt', 'desc')
-        .skip(skip)
-        .limit(pageSize)
-        .get()
 
       // Fetch authors
       const authorIds = []
       listResult.data.forEach(function (a) {
-        if (a.data && a.data.authorId) authorIds.push(a.data.authorId)
+        const d = a.data || a
+        if (d.authorId) authorIds.push(d.authorId)
       })
       const authors = {}
       if (authorIds.length > 0) {
@@ -92,17 +121,18 @@ exports.main = async (event, context) => {
         }
       })
 
-      return respond(0, 'success', { list: articles, total: countResult.total })
+      return respond(0, 'success', { list: articles, total: countObj.total })
     }
 
     // ---------- get article ----------
     if (action === 'get') {
       const { articleId } = data
-      // Try flat _id first, then data._id for wrapped storage
-      let articles = await db.collection('articles').where({ _id: articleId }).get()
-      if (!articles.data || articles.data.length === 0) {
-        articles = await db.collection('articles').where({ 'data._id': articleId }).get()
-      }
+      let articles = await db.collection('articles').where(
+        db.command.or(
+          { _id: articleId },
+          { 'data._id': articleId }
+        )
+      ).get()
       if (!articles.data || articles.data.length === 0) {
         return respond(404, '文章不存在', null)
       }
@@ -132,7 +162,7 @@ exports.main = async (event, context) => {
 
     // ---------- create article ----------
     if (action === 'create') {
-      if (!OPENID) return respond(401, '请先登录', null)
+      if (!USER_ID) return respond(401, '请先登录', null)
 
       const { title, content, coverImage, type = 'normal', tags: tagIds = [] } = data
       if (!title || !content) return respond(400, '标题和内容不能为空', null)
@@ -149,7 +179,7 @@ exports.main = async (event, context) => {
           coverImage: coverImage || '',
           type: type,
           status: 'pending',
-          authorId: OPENID,
+          authorId: USER_ID,
           readCount: 0,
           wechatSynced: false,
           createdAt: now,
@@ -172,15 +202,21 @@ exports.main = async (event, context) => {
 
     // ---------- update article ----------
     if (action === 'update') {
-      if (!OPENID) return respond(401, '请先登录', null)
+      if (!USER_ID) return respond(401, '请先登录', null)
 
       const { articleId, title, content, coverImage, tags: tagIds } = data
 
-      const articles = await db.collection('articles').where({ 'data._id': articleId }).get()
+      const articles = await db.collection('articles').where(
+        db.command.or(
+          { _id: articleId },
+          { 'data._id': articleId }
+        )
+      ).get()
       if (!articles.data || articles.data.length === 0) return respond(404, '文章不存在', null)
       const article = articles.data[0].data || articles.data[0]
+      const docId = articles.data[0]._id
 
-      if (article.authorId !== OPENID) {
+      if (article.authorId !== USER_ID) {
         return respond(403, '无权限修改', null)
       }
 
@@ -189,7 +225,7 @@ exports.main = async (event, context) => {
       if (content !== undefined) updateData.content = content
       if (coverImage !== undefined) updateData.coverImage = coverImage
 
-      await db.collection('articles').where({ 'data._id': articleId }).update({ data: updateData })
+      await db.collection('articles').doc(docId).update({ data: updateData })
 
       if (tagIds !== undefined) {
         await db.collection('article_tags').where({ articleId }).remove()
@@ -207,18 +243,24 @@ exports.main = async (event, context) => {
 
     // ---------- delete article ----------
     if (action === 'delete') {
-      if (!OPENID) return respond(401, '请先登录', null)
+      if (!USER_ID) return respond(401, '请先登录', null)
       const { articleId } = data
 
-      const articles = await db.collection('articles').where({ 'data._id': articleId }).get()
+      const articles = await db.collection('articles').where(
+        db.command.or(
+          { _id: articleId },
+          { 'data._id': articleId }
+        )
+      ).get()
       if (!articles.data || articles.data.length === 0) return respond(404, '文章不存在', null)
       const article = articles.data[0].data || articles.data[0]
+      const docId = articles.data[0]._id
 
-      if (article.authorId !== OPENID) {
+      if (article.authorId !== USER_ID) {
         return respond(403, '无权限删除', null)
       }
 
-      await db.collection('articles').where({ 'data._id': articleId }).remove()
+      await db.collection('articles').doc(docId).remove()
       await db.collection('article_tags').where({ articleId }).remove()
 
       return respond(0, '删除成功', null)
@@ -226,10 +268,19 @@ exports.main = async (event, context) => {
 
     // ---------- approve article ----------
     if (action === 'approve') {
-      if (!OPENID) return respond(401, '请先登录', null)
+      if (!USER_ID) return respond(401, '请先登录', null)
       const { articleId } = data
 
-      await db.collection('articles').where({ 'data._id': articleId }).update({
+      const articles = await db.collection('articles').where(
+        db.command.or(
+          { _id: articleId },
+          { 'data._id': articleId }
+        )
+      ).get()
+      if (!articles.data || articles.data.length === 0) return respond(404, '文章不存在', null)
+      const docId = articles.data[0]._id
+
+      await db.collection('articles').doc(docId).update({
         data: { status: 'approved', publishedAt: new Date(), updatedAt: new Date() }
       })
 
@@ -238,10 +289,19 @@ exports.main = async (event, context) => {
 
     // ---------- reject article ----------
     if (action === 'reject') {
-      if (!OPENID) return respond(401, '请先登录', null)
+      if (!USER_ID) return respond(401, '请先登录', null)
       const { articleId, reason } = data
 
-      await db.collection('articles').where({ 'data._id': articleId }).update({
+      const articles = await db.collection('articles').where(
+        db.command.or(
+          { _id: articleId },
+          { 'data._id': articleId }
+        )
+      ).get()
+      if (!articles.data || articles.data.length === 0) return respond(404, '文章不存在', null)
+      const docId = articles.data[0]._id
+
+      await db.collection('articles').doc(docId).update({
         data: { status: 'rejected', rejectReason: reason || '', updatedAt: new Date() }
       })
 
@@ -250,20 +310,39 @@ exports.main = async (event, context) => {
 
     // ---------- list my articles ----------
     if (action === 'listMyArticles') {
-      if (!OPENID) return respond(401, '请先登录', null)
+      if (!USER_ID) return respond(401, '请先登录', null)
       const { page = 1, pageSize = 20, status } = data
       const skip = (page - 1) * pageSize
 
-      const query = { authorId: OPENID }
-      if (status) query.status = status
+      const statusQuery = status
+        ? db.command.or(
+            { status: status },
+            { 'data.status': status }
+          )
+        : {}
 
-      const countResult = await db.collection('articles').where(query).count()
       const list = await db.collection('articles')
-        .where(query)
+        .where(db.command.and(
+          db.command.or(
+            { authorId: USER_ID },
+            { 'data.authorId': USER_ID }
+          ),
+          statusQuery
+        ))
         .orderBy('data.createdAt', 'desc')
         .skip(skip)
         .limit(pageSize)
         .get()
+
+      const countResult = await db.collection('articles')
+        .where(db.command.and(
+          db.command.or(
+            { authorId: USER_ID },
+            { 'data.authorId': USER_ID }
+          ),
+          statusQuery
+        ))
+        .count()
 
       const articles = list.data.map(function (a) { return a.data || a })
       return respond(0, 'success', { list: articles, total: countResult.total })
@@ -271,7 +350,7 @@ exports.main = async (event, context) => {
 
     // ---------- list tags ----------
     if (action === 'listTags') {
-      const list = await db.collection('tags').orderBy('data.name', 'asc').get()
+      const list = await db.collection('tags').orderBy('name', 'asc').get()
       const tags = list.data.map(function (t) {
         const d = t.data || t
         return { _id: d._id || t._id, name: d.name, color: d.color }
@@ -281,16 +360,19 @@ exports.main = async (event, context) => {
 
     // ---------- create tag ----------
     if (action === 'createTag') {
-      if (!OPENID) return respond(401, '请先登录', null)
+      if (!USER_ID) return respond(401, '请先登录', null)
       const { name, color } = data
       if (!name) return respond(400, '标签名不能为空', null)
 
       const tagId = 'tag_' + Date.now()
       await db.collection('tags').add({
         _id: tagId,
-        name: name.trim(),
-        color: color || '#6366F1',
-        createdAt: new Date()
+        data: {
+          _id: tagId,
+          name: name.trim(),
+          color: color || '#6366F1',
+          createdAt: new Date()
+        }
       })
 
       return respond(0, '标签创建成功', { tagId: tagId })
@@ -298,20 +380,25 @@ exports.main = async (event, context) => {
 
     // ---------- delete tag ----------
     if (action === 'deleteTag') {
-      if (!OPENID) return respond(401, '请先登录', null)
+      if (!USER_ID) return respond(401, '请先登录', null)
       const { tagId } = data
-      await db.collection('tags').where({ 'data._id': tagId }).remove()
+      const tags = await db.collection('tags').where(
+        db.command.or({ _id: tagId }, { 'data._id': tagId })
+      ).get()
+      if (tags.data && tags.data.length > 0) {
+        await db.collection('tags').doc(tags.data[0]._id).remove()
+      }
       await db.collection('article_tags').where({ tagId }).remove()
       return respond(0, '删除成功', null)
     }
 
     // ---------- collect ----------
     if (action === 'collect') {
-      if (!OPENID) return respond(401, '请先登录', null)
+      if (!USER_ID) return respond(401, '请先登录', null)
       const { articleId } = data
 
       const existing = await db.collection('collections').where({
-        userId: OPENID,
+        userId: USER_ID,
         articleId: articleId
       }).get()
 
@@ -320,7 +407,7 @@ exports.main = async (event, context) => {
       }
 
       await db.collection('collections').add({
-        userId: OPENID,
+        userId: USER_ID,
         articleId: articleId,
         createdAt: new Date()
       })
@@ -330,20 +417,20 @@ exports.main = async (event, context) => {
 
     // ---------- uncollect ----------
     if (action === 'uncollect') {
-      if (!OPENID) return respond(401, '请先登录', null)
+      if (!USER_ID) return respond(401, '请先登录', null)
       const { articleId } = data
-      await db.collection('collections').where({ userId: OPENID, articleId: articleId }).remove()
+      await db.collection('collections').where({ userId: USER_ID, articleId: articleId }).remove()
       return respond(0, '已取消收藏', null)
     }
 
     // ---------- my collections ----------
     if (action === 'myCollections') {
-      if (!OPENID) return respond(401, '请先登录', null)
+      if (!USER_ID) return respond(401, '请先登录', null)
       const { page = 1, pageSize = 20 } = data
       const skip = (page - 1) * pageSize
 
       const cols = await db.collection('collections')
-        .where({ userId: OPENID })
+        .where({ userId: USER_ID })
         .orderBy('createdAt', 'desc')
         .skip(skip)
         .limit(pageSize)
@@ -355,11 +442,54 @@ exports.main = async (event, context) => {
       }
 
       const articles = await db.collection('articles')
-        .where({ 'data._id': db.command.in(articleIds), status: 'approved' })
+        .where(
+          db.command.and(
+            db.command.or(
+              { _id: db.command.in(articleIds) },
+              { 'data._id': db.command.in(articleIds) }
+            ),
+            db.command.or(
+              { status: 'approved' },
+              { 'data.status': 'approved' }
+            )
+          )
+        )
         .get()
 
       const articleList = articles.data.map(function (a) { return a.data || a })
       return respond(0, 'success', { list: articleList, total: cols.total })
+    }
+
+    // ---------- stats ----------
+    if (action === 'stats') {
+      const approvedQuery = db.command.or(
+        { status: 'approved' },
+        { 'data.status': 'approved' }
+      )
+      const allArticles = await db.collection('articles').where(approvedQuery).field({ _id: true }).get()
+      const articleCount = allArticles.data.length
+
+      const users = await db.collection('users').count()
+      const userCount = users.total || 0
+
+      let viewCount = 0
+      allArticles.data.forEach(function (a) {
+        const d = a.data || a
+        if (d.readCount) viewCount += d.readCount
+      })
+
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
+      let todayCount = 0
+      allArticles.data.forEach(function (a) {
+        const d = a.data || a
+        if (d.publishedAt) {
+          const pubDate = new Date(d.publishedAt)
+          if (pubDate >= today) todayCount++
+        }
+      })
+
+      return respond(0, 'success', { articleCount, userCount, viewCount, todayCount })
     }
 
     return respond(404, 'Unknown action: ' + action, null)

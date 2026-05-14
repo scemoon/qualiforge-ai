@@ -31,20 +31,24 @@ exports.main = async (event, context) => {
     const rawBody = typeof event.body === 'string' ? JSON.parse(event.body) : event.body; const { action, data = {} } = rawBody || event
     const db = getDb()
     const ctx = getCloudbaseContext(context)
-    const OPENID = ctx.OPENID || ctx.userId || ''
+    const ctxUserId = ctx.USER_ID || ctx.userId || ''
+    const USER_ID = data.token || ctxUserId
 
     // List evaluations (public)
     if (action === 'list') {
-      const { skillId, page = 1, pageSize = 50 } = data
+      const { skillId, page = 1, pageSize = 50, keyword } = data
       const skip = (page - 1) * pageSize
 
       let query = {}
       if (skillId) query.skillId = skillId
+      if (keyword) {
+        query.modelName = new RegExp(keyword, 'i')
+      }
 
       const countResult = await db.collection('evaluations').where(query).count()
       const list = await db.collection('evaluations')
         .where(query)
-        .orderBy('overallScore', 'desc')
+        .orderBy('createdAt', 'desc')
         .skip(skip)
         .limit(pageSize)
         .get()
@@ -82,7 +86,7 @@ exports.main = async (event, context) => {
 
     // Create evaluation (admin only)
     if (action === 'create') {
-      if (!OPENID) return respond(401, '请先登录')
+      if (!USER_ID) return respond(401, '请先登录')
       // TODO: check admin role
 
       const { modelName, modelVersion, skillId, overallScore, dimensions, evaluationDate, articleId, remark } = data
@@ -111,7 +115,7 @@ exports.main = async (event, context) => {
 
     // Update evaluation
     if (action === 'update') {
-      if (!OPENID) return respond(401, '请先登录')
+      if (!USER_ID) return respond(401, '请先登录')
       const { evaluationId, ...updateFields } = data
 
       const updateData = {}
@@ -126,7 +130,7 @@ exports.main = async (event, context) => {
 
     // Delete evaluation
     if (action === 'delete') {
-      if (!OPENID) return respond(401, '请先登录')
+      if (!USER_ID) return respond(401, '请先登录')
       const { evaluationId } = data
       await db.collection('evaluations').where({ _id: evaluationId }).remove()
       return respond(0, '删除成功')

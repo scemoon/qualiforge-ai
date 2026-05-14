@@ -35,8 +35,8 @@ export const useAuthStore = create<AuthState>()(
           user,
           token,
           isAuthenticated: true,
-          isAdmin: user.role === 'admin',
-          isExpert: user.role === 'expert' || user.role === 'admin',
+          isAdmin: (user?.role ?? '') === 'admin',
+          isExpert: ((user?.role ?? '') === 'expert' || (user?.role ?? '') === 'admin'),
         }),
       logout: () =>
         set({
@@ -49,8 +49,8 @@ export const useAuthStore = create<AuthState>()(
       updateUser: (user) =>
         set({
           user,
-          isAdmin: user.role === 'admin',
-          isExpert: user.role === 'expert' || user.role === 'admin',
+          isAdmin: (user?.role ?? '') === 'admin',
+          isExpert: ((user?.role ?? '') === 'expert' || (user?.role ?? '') === 'admin'),
         }),
     }),
     { name: 'qf-auth' }

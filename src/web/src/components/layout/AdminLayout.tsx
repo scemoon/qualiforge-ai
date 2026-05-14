@@ -2,117 +2,152 @@ import { useState } from 'react'
 import { Outlet, Link, useLocation } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
 
-type NavItem = {
-  path: string
-  label: string
-  icon: string
-  exact?: boolean
-  external?: boolean
-}
-
-const navItems: NavItem[] = [
-  { path: '/admin', label: '首页', icon: '🏠', exact: true },
-  { path: '/admin/articles', label: '文章管理', icon: '📝' },
-  { path: '/admin/evaluations', label: '评测管理', icon: '🎯' },
-  { path: '/admin/sections', label: '板块管理', icon: '📋' },
-  { path: '/admin/tags', label: '标签管理', icon: '🏷️' },
-  { path: '/admin/wx-config', label: '公众号配置', icon: '📌' },
+const navItems = [
+  { path: '/admin', label: 'Dashboard', icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6', exact: true },
+  { path: '/admin/articles', label: '文章管理', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
+  { path: '/admin/evaluations', label: '评测管理', icon: 'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z' },
+  { path: '/admin/sections', label: '板块管理', icon: 'M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z' },
+  { path: '/admin/tags', label: '标签管理', icon: 'M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z' },
+  { path: '/admin/wx-config', label: '公众号配置', icon: 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z' },
 ]
 
 export default function AdminLayout() {
   const location = useLocation()
   const { user, logout } = useAuthStore()
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
 
-  const isActive = (item: typeof navItems[0]) =>
-    item.exact ? location.pathname === item.path : location.pathname.startsWith(item.path)
+  const isActive = (item: typeof navItems[0]) => {
+    if (item.exact) return location.pathname === item.path
+    return location.pathname === item.path
+  }
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB] flex flex-col md:flex-row">
-      {/* Mobile sidebar backdrop */}
+    <div className="h-screen flex flex-col bg-[#F4F6F8] overflow-hidden md:flex-row">
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          className="fixed inset-0 bg-black/40 z-40 md:hidden backdrop-blur-sm"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
-      {/* Sidebar */}
       <aside className={`
         fixed md:relative inset-y-0 left-0 z-50
-        w-56 bg-white border-r border-[#E5E7EB] flex flex-col
-        transform transition-transform duration-200 ease-in-out
-        md:transform-none md:flex
+        w-64 bg-gradient-to-b from-[#1a1a2e] to-[#16213e] flex flex-col
+        transform transition-transform duration-300 ease-out
+        md:transform-none md:flex md:shrink-0
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
       `}>
-        <div className="p-4 border-b border-[#E5E7EB]">
+        <div className="p-5 border-b border-white/10">
           <div className="flex items-center justify-between">
-            <h2 className="font-bold text-[#111827]">⚡ QualiForge</h2>
+            <Link to="/" className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white text-lg font-bold shadow-lg">
+                ⚡
+              </div>
+              <div>
+                <p className="text-white font-bold leading-tight">Forge</p>
+                <p className="text-white/50 text-xs">管理后台</p>
+              </div>
+            </Link>
             <button
-              className="md:hidden text-[#9CA3AF] hover:text-[#111827] text-xl leading-none"
+              className="md:hidden w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition"
               onClick={() => setSidebarOpen(false)}
             >
-              ×
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
             </button>
           </div>
-          <p className="text-xs text-[#9CA3AF] mt-1 truncate">{user?.email}</p>
-          <span className="inline-block mt-1 px-1.5 py-0.5 bg-[#EF4444] text-white text-xs rounded">
-            {user?.role === 'admin' ? '管理员' : user?.role}
-          </span>
         </div>
-        <nav className="flex-1 p-2 overflow-y-auto">
-          {navItems.map((item) => {
-            if (item.external) {
-              return (
-                <a
-                  key={item.path}
-                  href={item.path}
-                  onClick={() => setSidebarOpen(false)}
-                  className="flex items-center gap-2 px-3 py-2 rounded-md text-sm mb-0.5 text-[#4B5563] hover:bg-[#F3F4F6]"
-                >
-                  <span>{item.icon}</span>
-                  <span className="truncate">{item.label}</span>
-                </a>
-              )
-            }
-            return (
+
+        <nav className="flex-1 p-3 overflow-y-auto">
+          <div className="space-y-1">
+            {navItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
                 onClick={() => setSidebarOpen(false)}
-                className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm mb-0.5 ${
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
                   isActive(item)
-                    ? 'bg-[#EEF2FF] text-[#4F46E5] font-medium'
-                    : 'text-[#4B5563] hover:bg-[#F3F4F6]'
+                    ? 'bg-white text-[#4F46E5] shadow-lg shadow-indigo-500/30'
+                    : 'text-white/70 hover:bg-white/10 hover:text-white'
                 }`}
               >
-                <span>{item.icon}</span>
-                <span className="truncate">{item.label}</span>
+                <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} />
+                </svg>
+                <span>{item.label}</span>
               </Link>
-            )
-          })}
+            ))}
+          </div>
         </nav>
-        <div className="p-3 border-t border-[#E5E7EB] flex items-center justify-between">
-          <Link to="/" className="text-xs text-[#4F46E5] hover:underline">← 返回主页</Link>
-          <button onClick={logout} className="text-xs text-[#9CA3AF] hover:text-[#EF4444]">退出</button>
+
+        <div className="p-4 border-t border-white/10">
+          <div className="flex items-center gap-2">
+            <Link
+              to="/"
+              className="flex-1 flex items-center gap-1.5 text-sm text-white/60 hover:text-white transition"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 17l-5-5m0 0l5-5m-5 5h12" />
+              </svg>
+              <span>首页</span>
+            </Link>
+            <div className="relative">
+              <button
+                onClick={() => setUserMenuOpen(!userMenuOpen)}
+                className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] flex items-center justify-center text-white text-sm font-bold shadow-lg hover:shadow-xl transition-shadow"
+              >
+                {user?.nickname?.[0]?.toUpperCase() || 'A'}
+              </button>
+              {userMenuOpen && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setUserMenuOpen(false)} />
+                  <div className="absolute bottom-full right-0 mb-2 w-56 bg-white rounded-xl shadow-xl border border-[#E5E7EB] overflow-hidden z-50">
+                    <div className="px-4 py-3 border-b border-[#E5E7EB]">
+                      <p className="text-sm font-semibold text-[#111827]">{user?.nickname || '管理员'}</p>
+                      <p className="text-xs text-[#9CA3AF] truncate">{user?.email}</p>
+                    </div>
+                    <div className="py-2">
+                      <div className="flex items-center gap-2 px-4 py-2">
+                        <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+                        <span className="text-xs font-medium text-[#64748B]">管理员</span>
+                      </div>
+                    </div>
+                    <div className="border-t border-[#E5E7EB] py-2">
+                      <button
+                        onClick={() => { logout(); setUserMenuOpen(false) }}
+                        className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-500 hover:bg-red-50 transition"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                        <span>退出登录</span>
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
         </div>
       </aside>
 
-      {/* Main content */}
-      <div className="flex-1 flex flex-col min-w-0">
-        {/* Mobile top bar */}
-        <div className="md:hidden bg-white border-b border-[#E5E7EB] p-3 flex items-center justify-between sticky top-0 z-30">
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <div className="md:hidden bg-white border-b border-[#E5E7EB] px-4 py-3 flex items-center justify-between shrink-0">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="text-[#4B5563] hover:text-[#111827] text-xl leading-none"
+            className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-[#F3F4F6] text-[#4B5563] transition"
           >
-            ☰
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
           </button>
-          <Link to="/" className="text-sm text-[#4F46E5] hover:underline font-medium">← 返回主页</Link>
-          <div className="w-8" />
+          <span className="text-sm font-semibold text-[#111827]">管理后台</span>
+          <div className="w-10" />
         </div>
 
-        <main className="flex-1 p-4 md:p-6 overflow-y-auto">
+        <main className="flex-1 p-4 md:p-6 lg:p-8 overflow-y-auto">
           <Outlet />
         </main>
       </div>
