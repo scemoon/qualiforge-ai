@@ -1,0 +1,31 @@
+{
+  "version": "1.0",
+  "platform": "forge-ai",
+  "capabilities": [
+    {
+      "name": "auth",
+      "description": "用户认证",
+      "actions": ["login", "register", "logout", "resetPassword"]
+    },
+    {
+      "name": "article",
+      "description": "文章管理",
+      "actions": ["create", "read", "update", "delete", "list", "publish"]
+    },
+    {
+      "name": "evaluation",
+      "description": "评测管理",
+      "actions": ["create", "list", "get", "approve"]
+    },
+    {
+      "name": "tag",
+      "description": "标签管理",
+      "actions": ["create", "list", "delete"]
+    },
+    {
+      "name": "skill",
+      "description": "技能管理",
+      "actions": ["register", "list", "invoke"]
+    }
+  ]
+}

@@ -1,79 +1,56 @@
-# Forge Skill 内容模块
+# forge-skill
 
-Forge Skill 是 Forge AI 的技能定义和管理模块，提供 Skill 评测体系的核心配置。
+Forge AI 技能系统 - 统一调度平台所有技能。
+
+## 概述
+
+forge-skill 是 forge-ai 平台的技能系统，提供了统一的技能调度层，将平台的各项能力（认证、文章、评测、标签等）封装为可调用的技能接口。
 
 ## 目录结构
 
 ```
 forge-skill/
-├── config/           # 配置文件
-├── data/            # 种子数据
-├── scripts/         # 管理脚本
-├── validators/      # 数据校验
-├── docs/            # 文档
-└── test/            # 测试
+├── index.js              # 主入口 - skill 调度器
+├── skills/               # 技能实现
+│   ├── auth.js           # 认证技能
+│   ├── article.js        # 文章技能
+│   ├── evaluation.js     # 评测技能
+│   ├── tag.js            # 标签技能
+│   └── skill.js          # 技能管理技能
+├── config/               # 配置
+│   └── capabilities.json # 平台能力定义
+├── scripts/              # 脚本
+│   └── register.js       # 注册所有 skills
+├── docs/                 # 文档
+└── test/                 # 测试
 ```
 
-## 快速开始
+## 技能列表
 
-### 安装依赖
+| 技能 | 描述 | Actions |
+|------|------|---------|
+| auth | 用户认证 | login, register, logout, resetPassword |
+| article | 文章管理 | create, read, update, delete, list, publish |
+| evaluation | 评测管理 | create, list, get, approve |
+| tag | 标签管理 | create, list, delete |
+| skill | 技能管理 | register, list, invoke |
+
+## 使用方法
+
+```javascript
+const forgeSkill = require('./forge-skill')
+
+// 调用技能
+forgeSkill.main({
+  skill: 'auth',
+  action: 'login',
+  params: { email: 'xxx', password: 'xxx' }
+}, context)
+```
+
+## 部署
 
 ```bash
 npm install
+npm run register
 ```
-
-### 验证数据
-
-```bash
-npm run validate
-# 或
-node validators/skill-validator.js
-```
-
-### 安装 Skills 到云数据库
-
-```bash
-npm run install
-# 或
-node scripts/install.js
-```
-
-### 同步首页板块
-
-```bash
-npm run sync
-# 或
-node scripts/sync.js
-```
-
-### 导出/导入数据
-
-```bash
-# 导出
-node scripts/export.js
-
-# 导入
-node scripts/import.js <input-file>
-```
-
-## 配置文件说明
-
-- `config/skills.json` - Skill 定义列表
-- `config/sections.json` - 首页板块配置
-
-## Scripts
-
-| 命令 | 说明 |
-|------|------|
-| install | 安装 skills 和 sections 到云数据库 |
-| sync | 同步 sections 到首页 |
-| export | 导出云端数据到本地 |
-| import | 从本地导入数据到云端 |
-| validate | 校验配置文件格式 |
-| test | 运行测试 |
-
-## 云函数
-
-`cloud/forge-skill/index.js` 是云函数入口，提供统一的技能评测接口。
-
-详情见 [docs/](docs/) 目录。
