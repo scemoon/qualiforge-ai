@@ -1,0 +1,23 @@
+{
+  "skills": [
+    {
+      "name": "代码生成",
+      "icon": "⚡",
+      "color": "#6366F1",
+      "description": "AI 代码生成能力评测",
+      "dimensions": ["正确性", "安全性", "可维护性", "鲁棒性", "性能"]
+    },
+    {
+      "name": "代码补全",
+      "icon": "🔧",
+      "color": "#10B981",
+      "description": "AI 代码补全能力评测"
+    },
+    {
+      "name": "代码审查",
+      "icon": "🔍",
+      "color": "#F59E0B",
+      "description": "AI 代码审查能力评测"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "name": "forge-skill",
+  "version": "1.0.0",
+  "description": "Forge AI Skill Management Module",
+  "scripts": {
+    "deploy": "bash scripts/deploy.sh",
+    "test": "bash scripts/test.sh",
+    "sync-tags": "bash scripts/sync-tags.sh"
+  }
+}
