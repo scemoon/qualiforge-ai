@@ -1,22 +1,47 @@
 # Forge Skill Module
 
-Skill management module for Forge AI evaluation platform.
+This module contains skill definitions, data, and management scripts for Forge AI evaluation platform.
 
-## Overview
+## Directory Structure
 
-This module provides skill-based evaluation capabilities for AI code generation, completion, and review tasks.
-
-## Usage
-
-```bash
-npm run deploy    # Deploy cloud function
-npm run test      # Test API endpoints
-npm run sync-tags # Sync tags with homepage
+```
+forge-skill/
+├── README.md                    # This file
+├── package.json                 # npm entry point
+├── scripts/
+│   ├── deploy-to-cloud.sh       # Deploy skill configs to cloud
+│   ├── sync-sections.sh         # Sync skills to homepage sections
+│   ├── export-skills.js         # Export skill data from cloud
+│   └── import-skills.js         # Import skill data to cloud
+├── config/
+│   ├── skills.json              # Skill list definitions
+│   └── dimensions.json          # Evaluation dimensions
+├── data/
+│   └── seed-skills.json         # Initial seed data
+└── docs/
+    ├── README.md                # Usage documentation
+    └── skill-guide.md           # Skill creation guide
 ```
 
-## Structure
+## Purpose
 
-- `config/skills.json` - Skill definitions
-- `docs/api.md` - API documentation
-- `docs/data-model.md` - Data models
-- `scripts/` - Deployment and utility scripts
+This module is for **skill definitions and data management only** - NOT cloud function code.
+
+Cloud functions are located in the `/cloud` directory.
+
+## Quick Start
+
+1. Import skills to cloud:
+   ```bash
+   npm run import
+   ```
+
+2. Deploy skills to cloud:
+   ```bash
+   npm run deploy
+   ```
+
+3. Sync skills to homepage:
+   ```bash
+   npm run sync
+   ```

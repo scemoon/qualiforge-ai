@@ -1,5 +1,6 @@
 {
   "version": "1.0",
+  "description": "Initial seed data for Forge AI skills",
   "skills": [
     {
       "id": "code-generation",

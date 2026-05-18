@@ -1,10 +1,15 @@
 {
   "name": "forge-skill",
   "version": "1.0.0",
-  "description": "Forge AI Skill Management Module",
+  "description": "Skill definitions and management for Forge AI",
+  "main": "index.js",
   "scripts": {
-    "deploy": "bash scripts/deploy.sh",
-    "test": "bash scripts/test.sh",
-    "sync-tags": "bash scripts/sync-tags.sh"
-  }
+    "export": "node scripts/export-skills.js",
+    "import": "node scripts/import-skills.js",
+    "deploy": "bash scripts/deploy-to-cloud.sh",
+    "sync": "bash scripts/sync-sections.sh"
+  },
+  "keywords": ["skill", "ai", "evaluation"],
+  "author": "",
+  "license": "MIT"
 }
