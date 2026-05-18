@@ -1,15 +1,16 @@
 {
-  "name": "forge-skill",
+  "name": "forge-skill-content",
   "version": "1.0.0",
-  "description": "Skill definitions and management for Forge AI",
-  "main": "index.js",
+  "description": "Forge AI Skill Definitions and Scripts",
   "scripts": {
-    "export": "node scripts/export-skills.js",
-    "import": "node scripts/import-skills.js",
-    "deploy": "bash scripts/deploy-to-cloud.sh",
-    "sync": "bash scripts/sync-sections.sh"
+    "install": "node scripts/install.js",
+    "sync": "node scripts/sync.js",
+    "export": "node scripts/export.js",
+    "import": "node scripts/import.js",
+    "test": "node test/skills.test.js",
+    "validate": "node validators/skill-validator.js"
   },
-  "keywords": ["skill", "ai", "evaluation"],
-  "author": "",
-  "license": "MIT"
+  "dependencies": {
+    "@cloudbase/node-sdk": "^2.10.0"
+  }
 }
