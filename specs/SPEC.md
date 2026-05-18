@@ -1,9 +1,9 @@
-# QualiForge AI - 技术规格文档 (SPEC)
+# Forge AI - 技术规格文档 (SPEC)
 
-> **文档版本**: v1.2
+> **文档版本**: v1.3
 > **产品版本**: PRD v5.0 (对应)
-> **状态**: Phase 1 进行中（主体完成）
-> **最后更新**: 2026-05-10
+> **状态**: Phase 1-4 完成，上线运行中
+> **最后更新**: 2026-05-16
 
 ---
 
@@ -79,9 +79,9 @@
 
 ## 4. 页面路由总览
 
-**公开前台**：10 个页面（/、/article/search、/article/:id、/tags、/expert/:id、/login、/register）
-**专家中心**：5 个页面（/my/*），另有文章编辑页 `/my/articles/:id/edit` 待实现
-**管理后台**：7 个页面（/admin/*），`/admin/official` 官方出品
+**公开前台**：11 个页面（/、/leaderboard、/article/search、/article/:id、/tags、/expert/:id、/login、/register）
+**专家中心**：5 个页面（/my/*），文章编辑页 `/my/articles/:id/edit` 已完成
+**管理后台**：10 个页面（/admin/*），包括 /admin/official 官方出品
 
 详细路由设计见 `design/frontend/web/routing.md`
 
@@ -115,16 +115,34 @@
 
 ## 7. 当前阶段
 
-**Phase 1 — 进行中**
-- CloudBase 环境 `cloud1-2gavd8kj8a1ce021` 已配置
-- 14 个云函数已部署，article-crud 已修复 data 包装问题
-- 前台已部署到 `/forgeai/` 子路径（Path Passthrough 启用）
-- TipTap 富文本编辑器已集成（Phase 1.1 完成）
-- 缺失：Admin 官方出品页面 `/admin/official`（路由已注册，组件复用 ArticleNew）
+**Phase 1-4 全部完成 — 已上线**
 
-**Phase 2 — 待启动**
-前置依赖：Phase 1 收尾（官方出品页面）
+- CloudBase 环境 `cloud1-2gavd8kj8a1ce021` 已配置
+- 10 个云函数已部署
+- 前台已部署到 `/forge/` 子路径（Path Passthrough 启用）
+- 访问地址: https://cloud1-2gavd8kj8a1ce021-1306178265.tcloudbaseapp.com/forge/
+- TipTap 富文本编辑器已集成（Phase 1.1 完成）
+- 评测详情页采用上下布局（Phase 4 优化）
+- 移动端响应式适配完成（Phase 4 优化）
+- 首页 Tags 筛选已移至 Tab 前面（2026-05-16 优化）
+
+### 技术状态
+
+| 组件 | 状态 | 说明 |
+|------|------|------|
+| 前端框架 | React 18 + Vite 5 | TypeScript 严格模式 |
+| 状态管理 | Zustand + TanStack Query | 缓存策略已配置 |
+| 富文本编辑器 | TipTap 3.22 | 替代 react-markdown |
+| UI 组件 | TDesign + Tailwind CSS | 响应式适配完成 |
+| 云函数 | 10 个已部署 | API 契约已落地 |
+| 数据库 | MongoDB NoSQL | 12 个集合 |
+
+### 待优化项
+
+1. 测试覆盖：需要补充单元测试、集成测试、E2E 测试
+2. 性能监控：需要添加运行时性能监控
+3. 搜索功能：需要完善全局搜索（当前 /article/search 可用）
 
 ---
 
-*本文档为 QualiForge AI 开发唯一技术规格依据。设计文档之间的关系:requirements.md 定义需求 → SPEC.md 总览架构 → 各 design/* 子文档详细落地。*
+*本文档为 Forge AI 开发唯一技术规格依据。设计文档之间的关系:requirements.md 定义需求 → SPEC.md 总览架构 → 各 design/* 子文档详细落地。*

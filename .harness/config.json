@@ -1,7 +1,7 @@
 {
-  "name": "qualiforge-ai",
+  "name": "forge-ai",
   "platform": "web",
-  "description": "QualiForge AI — AI Coding 质量保障社区",
+  "description": "Forge AI — AI Coding 质量保障社区",
   "cloudbase": {
     "envId": "cloud1-2gavd8kj8a1ce021",
     "devEnvId": "cloud1-2gavd8kj8a1ce021"
@@ -10,5 +10,5 @@
     "appid": ""
   },
   "created": "2026-04-30T08:42:00.000000+00:00",
-  "lastUpdated": "2026-04-30T08:42:00.000000+00:00"
+  "lastUpdated": "2026-05-18T01:00:00.000000+00:00"
 }
