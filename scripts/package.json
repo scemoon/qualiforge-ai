@@ -1,0 +1,10 @@
+{
+  "name": "forge-ai-scripts",
+  "version": "1.0.0",
+  "scripts": {
+    "deploy:skill": "bash deploy-skill.sh",
+    "deploy:all": "bash deploy-all.sh",
+    "test:skill": "bash test-skill.sh",
+    "test:all": "bash test-all.sh"
+  }
+}
